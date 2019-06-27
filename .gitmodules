@@ -1,0 +1,3 @@
+[submodule "mini-cmake-qt"]
+	path = mini-cmake-qt
+	url = https://github.com/euler0/mini-cmake-qt.git
