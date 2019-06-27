@@ -1,4 +1,11 @@
 bin/
+
+# clion
 .idea/
 cmake-build-debug/
+
+# mac
 .DS_STORE
+
+# qt
+CMakeLists.txt.user
