@@ -49,7 +49,6 @@ void Renderer::render() {
 
   m_program->bind();
 
-
   glViewport(0, 0, m_viewportSize.width(), m_viewportSize.height());
 
   glBegin(GL_TRIANGLES);
@@ -57,7 +56,6 @@ void Renderer::render() {
   glVertex2f(0.0f, 0.5f);
   glVertex2f(0.5f, -0.5f);
   glEnd();
-
 
   m_program->release();
   m_window->resetOpenGLState();
