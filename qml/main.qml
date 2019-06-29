@@ -17,12 +17,24 @@ Window {
         SimView {
             id: simulation
             Layout.preferredWidth: parent.width * .70
+            Layout.preferredHeight: parent.height
             focus: true
 
-            Component.onCompleted: {
-                simulation.setWidth(width)
-                simulation.setHeight(height)
+            onWidthChanged: {
+                simulation.width = Layout.preferredWidth
             }
+
+            onHeightChanged: {
+                simulation.height = Layout.preferredHeight
+            }
+        }
+
+        Rectangle {
+            id: border
+            Layout.preferredWidth: 3
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            color: "#9B9B9B"
         }
 
         Rectangle {
@@ -30,7 +42,7 @@ Window {
             Layout.preferredWidth: parent.width * .30
             Layout.fillWidth: true
             Layout.fillHeight: true
-            color: "red";
+            color: "black";
         }
     }
 }

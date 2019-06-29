@@ -12,12 +12,28 @@ SimView::~SimView() {
   delete m_renderer;
 }
 
+void SimView::setWidth(int width) {
+  m_width = width;
+  updateViewportSize();
+}
+
+void SimView::setHeight(int height) {
+  m_height = height;
+  updateViewportSize();
+}
+
+void SimView::updateViewportSize() {
+  if (m_renderer) {
+    m_renderer->setViewportSize(QSize(m_width, m_height) * window()->devicePixelRatio());
+  }
+}
+
 void SimView::sync() {
   if (!m_renderer) {
     m_renderer = new Renderer{};
     connect(window(), &QQuickWindow::afterRendering, m_renderer, &Renderer::render, Qt::DirectConnection);
   }
-  m_renderer->setViewportSize(window()->size() * window()->devicePixelRatio());
+  m_renderer->setViewportSize(QSize(m_width, m_height) * window()->devicePixelRatio());
   m_renderer->setWindow(window());
 }
 
