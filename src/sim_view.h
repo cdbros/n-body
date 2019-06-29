@@ -1,8 +1,8 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
-#include <QtQuick/QQuickItem>
 #include "src/rendering/renderer.h"
+#include <QtQuick/QQuickItem>
 
 class SimView : public QQuickItem {
   Q_OBJECT
@@ -22,9 +22,9 @@ private slots:
   void handleWindowChanged(QQuickWindow *window);
 
 private:
- void setWidth(int width);
- void setHeight(int height);
- void updateViewportSize();
+  void setWidth(int width);
+  void setHeight(int height);
+  void updateViewportSize();
 
 private:
   int m_width;
