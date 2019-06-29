@@ -6,17 +6,11 @@ Renderer::Renderer() {
   m_viewportSize = QSize(0, 0);
 }
 
-Renderer::~Renderer() {
-  delete m_program;
-}
+Renderer::~Renderer() { delete m_program; }
 
-void Renderer::setViewportSize(const QSize &size) {
-  m_viewportSize = size;
-}
+void Renderer::setViewportSize(const QSize &size) { m_viewportSize = size; }
 
-void Renderer::setWindow(QQuickWindow *window) {
-    m_window = window;
-}
+void Renderer::setWindow(QQuickWindow *window) { m_window = window; }
 
 void Renderer::init() {
   initializeOpenGLFunctions();
@@ -29,15 +23,17 @@ void Renderer::init() {
                                               "    gl_Position = vertices;"
                                               "    coords = vertices.xy;"
                                               "}");
-  m_program->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment,
-                                              "uniform lowp float t;"
-                                              "varying highp vec2 coords;"
-                                              "void main() {"
-                                              "    lowp float i = 1. - (pow(abs(coords.x), 4.) + pow(abs(coords.y), 4.));"
-                                              "    i = smoothstep(t - 0.8, t + 0.8, i);"
-                                              "    i = floor(i * 20.) / 20.;"
-                                              "    gl_FragColor = vec4(coords * .5 + .5, i, i);"
-                                              "}");
+  m_program->addCacheableShaderFromSourceCode(
+      QOpenGLShader::Fragment,
+      "uniform lowp float t;"
+      "varying highp vec2 coords;"
+      "void main() {"
+      "    lowp float i = 1. - (pow(abs(coords.x), 4.) + pow(abs(coords.y), "
+      "4.));"
+      "    i = smoothstep(t - 0.8, t + 0.8, i);"
+      "    i = floor(i * 20.) / 20.;"
+      "    gl_FragColor = vec4(coords * .5 + .5, i, i);"
+      "}");
 
   m_program->link();
 }
@@ -60,5 +56,3 @@ void Renderer::render() {
   m_program->release();
   m_window->resetOpenGLState();
 }
-
-
