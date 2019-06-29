@@ -1,21 +1,18 @@
 
 #include "renderer.h"
 
-Renderer::Renderer() {
-  m_program = nullptr;
-  m_viewportSize = QSize(0, 0);
+#include <memory>
+
+void Renderer::setViewportSize(const QSize &size) noexcept {
+  m_viewportSize = size;
 }
 
-Renderer::~Renderer() { delete m_program; }
-
-void Renderer::setViewportSize(const QSize &size) { m_viewportSize = size; }
-
-void Renderer::setWindow(QQuickWindow *window) { m_window = window; }
+void Renderer::setWindow(QQuickWindow *window) noexcept { m_window = window; }
 
 void Renderer::init() {
   initializeOpenGLFunctions();
 
-  m_program = new QOpenGLShaderProgram();
+  m_program = std::make_unique<QOpenGLShaderProgram>();
   m_program->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex,
                                               "attribute highp vec4 vertices;"
                                               "varying highp vec2 coords;"
