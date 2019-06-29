@@ -1,4 +1,4 @@
-#include "simulation_view.h"
+#include "sim_view.h"
 
 #include <QtQuick/qquickwindow.h>
 

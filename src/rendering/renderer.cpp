@@ -49,6 +49,7 @@ void Renderer::render() {
 
   m_program->bind();
 
+
   glViewport(0, 0, m_viewportSize.width(), m_viewportSize.height());
 
   glBegin(GL_TRIANGLES);

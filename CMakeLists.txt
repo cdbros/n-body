@@ -11,9 +11,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt5 COMPONENTS Core Quick REQUIRED)
 find_package(OpenGL)
 
-# course files
+# source files
 file(GLOB_RECURSE HDRS "src/*.hh" "src/*.h")
-file(GLOB_RECURSE SRCS "src/*.cpp")
+file(GLOB_RECURSE SRCS "src/*.cpp" "src/*.c")
 
 # qml files
 set(QML "qml/qml.qrc")
