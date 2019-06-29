@@ -7,6 +7,9 @@
 class SimView : public QQuickItem {
   Q_OBJECT
 
+  Q_PROPERTY(int width WRITE setWidth)
+  Q_PROPERTY(int height WRITE setHeight)
+
 public:
   SimView();
   ~SimView();
@@ -19,7 +22,14 @@ private slots:
   void handleWindowChanged(QQuickWindow *window);
 
 private:
-    Renderer *m_renderer;
+ void setWidth(int width);
+ void setHeight(int height);
+ void updateViewportSize();
+
+private:
+  int m_width;
+  int m_height;
+  Renderer *m_renderer;
 };
 
 #endif // SIMULATION_H
