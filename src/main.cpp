@@ -1,7 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
-#include "simulation_view.h"
+#include "sim_view.h"
 
 int main(int argc, char *argv[])
 {

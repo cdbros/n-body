@@ -6,7 +6,7 @@
 #include <QQuickWindow>
 
 class Renderer : public QObject, protected QOpenGLFunctions {
-Q_OBJECT
+  Q_OBJECT
 
 public:
   Renderer();
