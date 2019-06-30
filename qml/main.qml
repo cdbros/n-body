@@ -21,6 +21,7 @@ Window {
     RowLayout {
         width: parent.width
         height: parent.height
+        spacing: 0
 
         SimView {
             id: simulation

@@ -1,5 +1,6 @@
 
 #include "renderer.h"
+#include "shaders.h"
 
 #include <memory>
 
@@ -13,26 +14,33 @@ void Renderer::init() {
   initializeOpenGLFunctions();
 
   m_program = std::make_unique<QOpenGLShaderProgram>();
-  m_program->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex,
-                                              "attribute highp vec4 vertices;"
-                                              "varying highp vec2 coords;"
-                                              "void main() {"
-                                              "    gl_Position = vertices;"
-                                              "    coords = vertices.xy;"
-                                              "}");
-  m_program->addCacheableShaderFromSourceCode(
-      QOpenGLShader::Fragment,
-      "uniform lowp float t;"
-      "varying highp vec2 coords;"
-      "void main() {"
-      "    lowp float i = 1. - (pow(abs(coords.x), 4.) + pow(abs(coords.y), "
-      "4.));"
-      "    i = smoothstep(t - 0.8, t + 0.8, i);"
-      "    i = floor(i * 20.) / 20.;"
-      "    gl_FragColor = vec4(coords * .5 + .5, i, i);"
-      "}");
 
+  // create shaders and link
+  m_program->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex,
+                                              vertexShaderSource);
+  m_program->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment,
+                                              fragmentShaderSource);
   m_program->link();
+
+  float vertices[] = {
+      -0.5f, -0.5f, 0.0f, // left
+      0.5f,  -0.5f, 0.0f, // right
+      0.0f,  0.5f,  0.0f  // top
+  };
+
+  uint32_t VBO;
+  glGenVertexArrays(1, &m_vao);
+  glGenBuffers(1, &VBO);
+  glBindVertexArray(m_vao);
+
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+  glEnableVertexAttribArray(0);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
 }
 
 void Renderer::render() {
@@ -43,12 +51,10 @@ void Renderer::render() {
   m_program->bind();
 
   glViewport(0, 0, m_viewportSize.width(), m_viewportSize.height());
+  clearColorViewPort(0.2f, 0.3f, 0.3f, 1.0f);
 
-  glBegin(GL_TRIANGLES);
-  glVertex2f(-0.5f, -0.5f);
-  glVertex2f(0.0f, 0.5f);
-  glVertex2f(0.5f, -0.5f);
-  glEnd();
+  glBindVertexArray(m_vao);
+  glDrawArrays(GL_TRIANGLES, 0, 3);
 
   m_program->release();
   m_window->resetOpenGLState();
