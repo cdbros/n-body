@@ -15,6 +15,7 @@ public:
 
 public slots:
   void sync();
+  void cleanup();
 
 private slots:
   void handleWindowChanged(QQuickWindow *window) const;
