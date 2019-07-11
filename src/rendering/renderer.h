@@ -30,7 +30,11 @@ private:
   QSize m_viewportSize{};
   std::unique_ptr<QOpenGLShaderProgram> m_program{};
   QQuickWindow *m_window;
-  uint32_t m_vao;
+
+  GLuint m_vao;
+  GLuint m_vbo;
+  GLuint m_eab;
+  GLuint m_obo;
 };
 
 #endif // RENDERER_H
