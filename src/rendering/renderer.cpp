@@ -1,8 +1,11 @@
-
 #include "renderer.h"
 #include "shaders.h"
 
-#include <memory>
+#define GL_GLEXT_PROTOTYPES
+#include <GL/glx.h>
+#include <GL/gl.h>
+#include <X11/X.h>
+#include <X11/keysym.h>
 
 void Renderer::setViewportSize(const QSize &size) noexcept {
   m_viewportSize = size;
@@ -29,9 +32,12 @@ void Renderer::init() {
   };
 
   uint32_t VBO;
-  glGenVertexArrays(1, &m_vao);
+  m_vao = std::make_unique<QOpenGLVertexArrayObject>(this);
+  m_vao->create();
+  //glGenVertexArrays(1, &m_vao);
   glGenBuffers(1, &VBO);
-  glBindVertexArray(m_vao);
+  m_vao->bind();
+  //glBindVertexArray(m_vao);
 
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -40,7 +46,7 @@ void Renderer::init() {
   glEnableVertexAttribArray(0);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
+  //m_vao->unbind();
 }
 
 void Renderer::render() {
@@ -53,7 +59,7 @@ void Renderer::render() {
   glViewport(0, 0, m_viewportSize.width(), m_viewportSize.height());
   clearColorViewPort(0.2f, 0.3f, 0.3f, 1.0f);
 
-  glBindVertexArray(m_vao);
+  m_vao->bind();
   glDrawArrays(GL_TRIANGLES, 0, 3);
 
   m_program->release();

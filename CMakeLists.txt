@@ -8,7 +8,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt5 COMPONENTS Core Quick REQUIRED)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Quick REQUIRED)
 find_package(OpenGL)
 
 # source files

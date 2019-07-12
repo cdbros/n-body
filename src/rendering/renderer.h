@@ -3,7 +3,9 @@
 
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
+#include <QOpenGLVertexArrayObject>
 #include <QQuickWindow>
+#include <memory>
 
 class Renderer : public QObject, protected QOpenGLFunctions {
   Q_OBJECT
@@ -30,7 +32,7 @@ private:
   QSize m_viewportSize{};
   std::unique_ptr<QOpenGLShaderProgram> m_program{};
   QQuickWindow *m_window;
-  uint32_t m_vao;
+  std::unique_ptr<QOpenGLVertexArrayObject> m_vao;
 };
 
 #endif // RENDERER_H
