@@ -94,9 +94,9 @@ void Renderer::init() {
       0, 1, 2, 2, 3, 0,
   };
   GLfloat offsets[] = {
-       0.5f,  0.5f,
-      -0.5f, -0.5f,
-       0.2f,  0.0f,
+       0.0f,  0.0f, 0.2f,
+       0.5f,  0.5f, 0.1f,
+      -0.5f, -0.5f, 0.0f,
   };
 
   gl_check(glGenVertexArrays(1, &m_vao));
@@ -116,7 +116,7 @@ void Renderer::init() {
   gl_check(glBufferData(GL_ARRAY_BUFFER, sizeof(offsets), offsets, GL_STATIC_DRAW));
   int offset_loc = gl_check(m_program->attributeLocation("offset"));
   gl_check(glEnableVertexAttribArray(offset_loc));
-  gl_check(glVertexAttribPointer(offset_loc, 2, GL_FLOAT, GL_FALSE, 0, 0));
+  gl_check(glVertexAttribPointer(offset_loc, 3, GL_FLOAT, GL_FALSE, 0, 0));
   gl_check(glVertexAttribDivisor(offset_loc, 1));
 
   gl_check(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eab));
@@ -140,22 +140,20 @@ void Renderer::render() {
 
   m_program->bind();
 
-  glViewport(0, 0, m_viewportSize.width(), m_viewportSize.height());
-  glScissor(0, 0, m_viewportSize.width(), m_viewportSize.height());
-  glEnable(GL_SCISSOR_TEST);
-  glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  gl_check(glViewport(0, 0, m_viewportSize.width(), m_viewportSize.height()));
+  gl_check(glScissor(0, 0, m_viewportSize.width(), m_viewportSize.height()));
+  gl_check(glEnable(GL_SCISSOR_TEST));
+  gl_check(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
+  gl_check(glClear(GL_COLOR_BUFFER_BIT));
 
   gl_check(glEnable(GL_BLEND));
-  gl_check(glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE));
-
-  //gl_check(glEnable(GL_CULL_FACE));
-  //gl_check(glCullFace(GL_BACK));
-  //gl_check(glEnable(GL_DEPTH_TEST));
+  gl_check(glEnable(GL_DEPTH_TEST));
+  //gl_check(glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE));
+  gl_check(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
   gl_check(glBindVertexArray(m_vao));
-  glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eab);
+  gl_check(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
+  gl_check(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eab));
   gl_check(glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, 3));
 
   m_program->release();
