@@ -3,34 +3,12 @@
 
 #include <QString>
 
-const QString vertexShaderSource = R"glsl(
-#version 410 core
+const QString vertexShaderSource =
+#include "shaders/vertex.glsl"
+    ;
 
-layout (location = 0) in vec2 pos;
-layout (location = 1) in vec3 offset;
-
-uniform mat4 mvp;
-out vec2 vpos;
-
-void main() {
-    vpos = pos;
-    gl_Position = mvp * vec4(pos.x + offset.x, pos.y + offset.y, offset.z, 1.0);
-}
-)glsl";
-
-const QString fragmentShaderSource = R"glsl(
-#version 410 core
-
-out vec4 frag_color;
-in vec2 vpos;
-
-void main() {
-    float dis = sqrt(dot(vpos, vpos));
-    dis = 0.5f - dis;
-    dis = max(dis, 0.0f);
-    dis = ceil(dis / 0.5f);
-    frag_color = vec4(1.0f, 1.0f, 1.0f, dis);
-}
-)glsl";
+const QString fragmentShaderSource =
+#include "shaders/fragment.glsl"
+    ;
 
 #endif // RENDERING_SHADERS_H

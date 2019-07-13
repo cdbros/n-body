@@ -6,35 +6,27 @@
 #include <QQuickWindow>
 
 class Renderer : public QObject, protected QOpenGLFunctions {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
-  void setViewportSize(const QSize &size) noexcept;
-  void setWindow(QQuickWindow *window) noexcept;
+  public:
+    void setViewportSize(const QSize &size) noexcept;
+    void setWindow(QQuickWindow *window) noexcept;
 
-public slots:
-  void render();
+  public slots:
+    void render();
 
-private:
-  void init();
+  private:
+    void init();
 
-  inline void clearColorViewPort(GLclampf red, GLclampf green, GLclampf blue,
-                                 GLclampf alpha) {
-    glScissor(0, 0, m_viewportSize.width(), m_viewportSize.height());
-    glEnable(GL_SCISSOR_TEST);
-    glClearColor(red, green, blue, alpha);
-    glClear(GL_COLOR_BUFFER_BIT);
-  }
+  private:
+    QSize m_viewportSize{};
+    std::unique_ptr<QOpenGLShaderProgram> m_program{};
+    QQuickWindow *m_window;
 
-private:
-  QSize m_viewportSize{};
-  std::unique_ptr<QOpenGLShaderProgram> m_program{};
-  QQuickWindow *m_window;
-
-  GLuint m_vao;
-  GLuint m_vbo;
-  GLuint m_eab;
-  GLuint m_obo;
+    GLuint m_vao;
+    GLuint m_vbo;
+    GLuint m_eab;
+    GLuint m_obo;
 };
 
 #endif // RENDERER_H
