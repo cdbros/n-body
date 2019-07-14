@@ -4,7 +4,10 @@
 #include "simview.h"
 #include "ui_mainwindow.h"
 #include <QMainWindow>
+<<<<<<< HEAD
 #include <memory>
+=======
+>>>>>>> using QWidgets instead of QQuick
 
 namespace Ui {
 class MainWindow;
