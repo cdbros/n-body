@@ -1,26 +1,20 @@
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
-
-#include "sim_view.h"
+#include "mainwindow.h"
+#include <QApplication>
+#include <QSurfaceFormat>
 
 int main(int argc, char *argv[]) {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     // set OpenGL version to 4.1
     QSurfaceFormat glFormat;
+    glFormat.setDepthBufferSize(24);
     glFormat.setVersion(4, 1);
     glFormat.setProfile(QSurfaceFormat::CoreProfile);
     QSurfaceFormat::setDefaultFormat(glFormat);
 
-    QGuiApplication app(argc, argv);
+    QApplication application(argc, argv);
+    MainWindow w;
+    w.show();
 
-    qmlRegisterType<SimView>("NBody", 1, 0, "SimView");
-
-    QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-    if (engine.rootObjects().isEmpty()) {
-        return -1;
-    }
-
-    return QCoreApplication::exec();
+    return QApplication::exec();
 }
