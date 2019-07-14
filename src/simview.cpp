@@ -1,6 +1,12 @@
 #include "simview.h"
 
-SimView::SimView(QWidget *parent) : QOpenGLWidget(parent) {}
+SimView::SimView(QWidget *parent) : QOpenGLWidget(parent) {
+    QSizePolicy spSimView(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    spSimView.setHorizontalStretch(2);
+    this->setSizePolicy(spSimView);
+
+    this->setObjectName(QString::fromUtf8("simView"));
+}
 
 void SimView::initializeGL() {
     initializeOpenGLFunctions();

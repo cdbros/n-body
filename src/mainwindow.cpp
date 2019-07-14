@@ -1,23 +1,28 @@
 #include "mainwindow.h"
 #include <QHBoxLayout>
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent}, ui{std::make_unique<Ui::MainWindow>()} {
-    ui->setupUi(this);
+MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
+    if (this->objectName().isEmpty()) {
+        this->setObjectName(QString::fromUtf8("MainWindow"));
+    }
 
-    simView = std::make_unique<SimView>(ui->centralWidget);
-    simView->setObjectName(QString::fromUtf8("simView"));
-    ui->horizontalLayout->addWidget(simView.get());
+    this->setWindowTitle("N Body");
+    this->resize(640, 480);
 
-    QPalette pal = palette();
-    pal.setColor(QPalette::Window, Qt::black);
-    ui->configPanel->setAutoFillBackground(true);
-    ui->configPanel->setPalette(pal);
+    centralWidget = std::make_unique<QWidget>(this);
+    centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
 
-    QSizePolicy spSimView(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    spSimView.setHorizontalStretch(2);
-    simView->setSizePolicy(spSimView);
+    horizontalLayout = std::make_unique<QHBoxLayout>(centralWidget.get());
+    horizontalLayout->setSpacing(0);
+    horizontalLayout->setContentsMargins(0, 0, 0, 0);
+    horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
 
-    QSizePolicy spConfigPanel(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    spConfigPanel.setHorizontalStretch(1);
-    ui->configPanel->setSizePolicy(spConfigPanel);
+    this->setCentralWidget(centralWidget.get());
+
+    // simulation view and control panel
+    simView = std::make_unique<SimView>(centralWidget.get());
+    controlPanel = std::make_unique<ControlPanelWidget>(centralWidget.get());
+
+    horizontalLayout->addWidget(simView.get());
+    horizontalLayout->addWidget(controlPanel.get());
 }
