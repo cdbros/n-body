@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent}, ui{std::make_uniq
 
     QSizePolicy spSimView(QSizePolicy::Preferred, QSizePolicy::Preferred);
     spSimView.setHorizontalStretch(2);
-    ui->simView->setSizePolicy(spSimView);
+    simView->setSizePolicy(spSimView);
 
     QSizePolicy spConfigPanel(QSizePolicy::Preferred, QSizePolicy::Preferred);
     spConfigPanel.setHorizontalStretch(1);
