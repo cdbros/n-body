@@ -1,3 +1,8 @@
+#pragma once
+
+#ifndef BODY_H
+#define BODY_H
+
 #include <string_view>
 
 enum class Colour {
@@ -48,3 +53,5 @@ class Body {
         Colour colour;
 
 };
+
+#endif // End of BODY_H
