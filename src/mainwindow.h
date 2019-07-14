@@ -1,14 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "control_panel_widget.h"
 #include "simview.h"
-#include "ui_mainwindow.h"
+#include <QHBoxLayout>
 #include <QMainWindow>
 #include <memory>
-
-namespace Ui {
-class MainWindow;
-}
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -17,8 +14,10 @@ class MainWindow : public QMainWindow {
     explicit MainWindow(QWidget *parent = nullptr);
 
   private:
-    std::unique_ptr<Ui::MainWindow> ui;
+    std::unique_ptr<QWidget> centralWidget;
+    std::unique_ptr<QHBoxLayout> horizontalLayout;
     std::unique_ptr<SimView> simView;
+    std::unique_ptr<ControlPanelWidget> controlPanel;
 };
 
 #endif // MAINWINDOW_H
