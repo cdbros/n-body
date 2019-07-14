@@ -8,6 +8,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent}, ui{std::make_uniq
     simView->setObjectName(QString::fromUtf8("simView"));
     ui->horizontalLayout->addWidget(simView.get());
 
+    QPalette pal = palette();
+    pal.setColor(QPalette::Window, Qt::black);
+    ui->configPanel->setAutoFillBackground(true);
+    ui->configPanel->setPalette(pal);
+
     QSizePolicy spSimView(QSizePolicy::Preferred, QSizePolicy::Preferred);
     spSimView.setHorizontalStretch(2);
     simView->setSizePolicy(spSimView);
