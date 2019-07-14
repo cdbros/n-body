@@ -4,6 +4,7 @@
 #include "simview.h"
 #include "ui_mainwindow.h"
 #include <QMainWindow>
+#include <memory>
 
 namespace Ui {
 class MainWindow;
