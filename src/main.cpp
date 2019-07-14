@@ -3,7 +3,7 @@
 
 int main() {
 
-    std::cout << "The Gamer Word of Bodies Begins" << std::endl;
+    std::cout << "The Gamer World of Bodies Begins" << std::endl;
 
     Body a = Body(23, 22, 3, 3, 2, Colour::green);
 

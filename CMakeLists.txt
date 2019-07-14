@@ -1,9 +1,20 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.11)
 
-project(n-body)
+project(n-body LANGUAGES CXX)
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-file(GLOB_RECURSE SRCS "src/*.cpp")
+find_package(Qt5 COMPONENTS Core Quick REQUIRED)
+find_package(OpenGL REQUIRED)
 
-add_executable(n-body ${SRCS})
+# source files
+file(GLOB_RECURSE HDRS "src/*.hh" "src/*.h")
+file(GLOB_RECURSE SRCS "src/*.cpp" "src/*.c")
+
+add_executable(${PROJECT_NAME} ${SRCS} ${HDRS} ${QML} ${OTHER_FILES})
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Quick)
+target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)

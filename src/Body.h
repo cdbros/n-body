@@ -52,8 +52,8 @@ class Body {
             double EPS = 3E4;      // softening parameter (just to avoid infinities)
             double dx = b.rx - rx;
             double dy = b.ry - ry;
-            double dist = sqrt(dx*dx + dy*dy);
-            double F = (G * mass * b.mass) / (dist*dist + EPS*EPS);
+            double dist = sqrt((dx * dx) + (dy * dy));
+            double F = ((G * mass) * b.mass) / ((dist * dist) + (EPS * EPS));
             fx += F * dx / dist;
             fy += F * dy / dist;
         }
