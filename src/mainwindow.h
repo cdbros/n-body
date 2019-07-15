@@ -1,8 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "control_panel_widget.h"
-#include "simview.h"
+#include "ControlPanelWidget.h"
+#include "SimView.h"
 #include <QHBoxLayout>
 #include <QMainWindow>
 #include <memory>
