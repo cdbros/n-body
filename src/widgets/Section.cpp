@@ -33,7 +33,7 @@ Section::Section(const QString &title, const int animationDuration, QWidget *par
     toggleButton->setStyleSheet("QToolButton {border: none; color : white;}");
     toggleButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     toggleButton->setArrowType(Qt::ArrowType::RightArrow);
-    toggleButton->setText(title);
+    toggleButton->setText("  " + title);
     toggleButton->setCheckable(true);
     toggleButton->setChecked(false);
 
