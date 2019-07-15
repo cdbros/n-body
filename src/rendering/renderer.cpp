@@ -1,5 +1,5 @@
-#include "renderer.h"
-#include "shaders.h"
+#include "Renderer.h"
+#include "Shaders.h"
 #include <iostream>
 
 #ifndef NDEBUG
@@ -128,6 +128,8 @@ void Renderer::initialize() {
     gl_check(glBindVertexArray(0));
 
     m_viewportSize = { m_openGLView->width(), m_openGLView->height() };
+
+    std::cout << m_viewportSize.width() << "," << m_viewportSize.height()  << std::endl;
 }
 
 void Renderer::renderReady(const GLfloat *objCoords, std::size_t numObjs) {

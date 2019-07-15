@@ -1,13 +1,13 @@
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include <QHBoxLayout>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
-    if (this->objectName().isEmpty()) {
-        this->setObjectName(QString::fromUtf8("MainWindow"));
+    if (objectName().isEmpty()) {
+        setObjectName(QString::fromUtf8("MainWindow"));
     }
 
-    this->setWindowTitle("N Body");
-    this->resize(640, 480);
+    setWindowTitle("N Body");
+    resize(1280, 720);
 
     centralWidget = std::make_unique<QWidget>(this);
     centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
     horizontalLayout->setContentsMargins(0, 0, 0, 0);
     horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
 
-    this->setCentralWidget(centralWidget.get());
+    setCentralWidget(centralWidget.get());
 
     // simulation view and control panel
     simView = std::make_unique<SimView>(centralWidget.get());

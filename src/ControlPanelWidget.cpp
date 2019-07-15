@@ -1,4 +1,4 @@
-#include "control_panel_widget.h"
+#include "ControlPanelWidget.h"
 
 ControlPanelWidget::ControlPanelWidget(QWidget *parent) : QWidget{parent} {
     QPalette pal = palette();
