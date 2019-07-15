@@ -5,6 +5,7 @@
 #include "src/widgets/SimView.h"
 #include <QHBoxLayout>
 #include <QMainWindow>
+#include <QShortcut>
 #include <memory>
 
 class MainWindow : public QMainWindow {
@@ -14,10 +15,11 @@ class MainWindow : public QMainWindow {
     explicit MainWindow(QWidget *parent = nullptr);
 
   private:
-    std::unique_ptr<QWidget> centralWidget;
-    std::unique_ptr<QHBoxLayout> horizontalLayout;
-    std::unique_ptr<SimView> simView;
-    std::unique_ptr<ControlPanelWidget> controlPanel;
+    std::unique_ptr<QWidget> m_centralWidget;
+    std::unique_ptr<QHBoxLayout> m_horizontalLayout;
+    std::unique_ptr<SimView> m_simView;
+    std::unique_ptr<ControlPanelWidget> m_controlPanel;
+    std::unique_ptr<QShortcut> m_closeShortcut;
 };
 
 #endif // MAINWINDOW_H
