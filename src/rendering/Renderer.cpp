@@ -121,7 +121,7 @@ void Renderer::initialize() {
     gl_check(glBindVertexArray(0));
 }
 
-void Renderer::renderReady(const GLfloat *objCoords, std::size_t numObjs) {
+void Renderer::renderReady(const GLfloat *objCoords, const std::size_t numObjs) {
     m_objCoords = objCoords;
     m_numObjs = numObjs;
     m_openGLView->update();

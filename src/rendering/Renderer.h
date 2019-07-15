@@ -29,10 +29,10 @@ class Renderer : public QObject, protected QOpenGLFunctions_4_1_Core {
     std::size_t m_numObjs = 0;
     GLfloat m_radius = 0.05f;
     ;
-    GLuint m_vao;
-    GLuint m_vbo;
-    GLuint m_eab;
-    GLuint m_obo;
+    GLuint m_vao{};
+    GLuint m_vbo{};
+    GLuint m_eab{};
+    GLuint m_obo{};
 };
 
 #endif // RENDERER_H
