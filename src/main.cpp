@@ -4,7 +4,6 @@
 
 int main(int argc, char *argv[]) {
     qRegisterMetaType<std::size_t>("std::size_t");
-
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     // set OpenGL version to 4.1

@@ -32,11 +32,11 @@ class Section : public QWidget {
     Q_OBJECT
 
   private:
-    QGridLayout *mainLayout;
-    QToolButton *toggleButton;
-    QFrame *headerLine;
-    QParallelAnimationGroup *toggleAnimation;
-    QScrollArea *contentArea;
+    std::unique_ptr<QGridLayout> mainLayout;
+    std::unique_ptr<QToolButton> toggleButton;
+    std::unique_ptr<QFrame> headerLine;
+    std::unique_ptr<QParallelAnimationGroup> toggleAnimation;
+    std::unique_ptr<QScrollArea> contentArea;
     int animationDuration;
 
   public:
