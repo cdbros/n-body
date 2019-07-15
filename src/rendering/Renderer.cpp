@@ -130,7 +130,7 @@ void Renderer::renderReady(const GLfloat *objCoords, const std::size_t numObjs) 
 void Renderer::render() {
     m_program->bind();
 
-    gl_check(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
+    gl_check(glClearColor(0, 0, 0, 1));
     gl_check(glClear(GL_COLOR_BUFFER_BIT));
 
     gl_check(glEnable(GL_BLEND));
