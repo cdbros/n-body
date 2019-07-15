@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
         setObjectName(QString::fromUtf8("MainWindow"));
     }
 
-    setWindowTitle("N Body");
+    setWindowTitle("N Body Simulation");
     resize(1280, 720);
 
     m_centralWidget = std::make_unique<QWidget>(this);

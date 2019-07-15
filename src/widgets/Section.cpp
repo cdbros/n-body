@@ -24,11 +24,11 @@
 
 Section::Section(const QString &title, const int animationDuration, QWidget *parent)
     : QWidget(parent), animationDuration(animationDuration) {
-    toggleButton = new QToolButton(this);
-    headerLine = new QFrame(this);
-    toggleAnimation = new QParallelAnimationGroup(this);
-    contentArea = new QScrollArea(this);
-    mainLayout = new QGridLayout(this);
+    toggleButton = std::make_unique<QToolButton>(this);
+    headerLine = std::make_unique<QFrame>(this);
+    toggleAnimation = std::make_unique<QParallelAnimationGroup>(this);
+    contentArea = std::make_unique<QScrollArea>(this);
+    mainLayout = std::make_unique<QGridLayout>(this);
 
     toggleButton->setStyleSheet("QToolButton {border: none; color : white;}");
     toggleButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -50,18 +50,18 @@ Section::Section(const QString &title, const int animationDuration, QWidget *par
     // let the entire widget grow and shrink with its content
     toggleAnimation->addAnimation(new QPropertyAnimation(this, "minimumHeight"));
     toggleAnimation->addAnimation(new QPropertyAnimation(this, "maximumHeight"));
-    toggleAnimation->addAnimation(new QPropertyAnimation(contentArea, "maximumHeight"));
+    toggleAnimation->addAnimation(new QPropertyAnimation(contentArea.get(), "maximumHeight"));
 
     mainLayout->setVerticalSpacing(0);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
     int row = 0;
-    mainLayout->addWidget(toggleButton, row, 0, 1, 1, Qt::AlignLeft);
-    mainLayout->addWidget(headerLine, row++, 2, 1, 1);
-    mainLayout->addWidget(contentArea, row, 0, 1, 3);
-    setLayout(mainLayout);
+    mainLayout->addWidget(toggleButton.get(), row, 0, 1, 1, Qt::AlignLeft);
+    mainLayout->addWidget(headerLine.get(), row++, 2, 1, 1);
+    mainLayout->addWidget(contentArea.get(), row, 0, 1, 3);
+    setLayout(mainLayout.get());
 
-    QObject::connect(toggleButton, &QToolButton::toggled, [this](const bool checked) {
+    QObject::connect(toggleButton.get(), &QToolButton::toggled, [this](const bool checked) {
         toggleButton->setArrowType(checked ? Qt::ArrowType::DownArrow : Qt::ArrowType::RightArrow);
         toggleAnimation->setDirection(checked ? QAbstractAnimation::Forward : QAbstractAnimation::Backward);
         toggleAnimation->start();
