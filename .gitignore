@@ -9,3 +9,5 @@ cmake-build-debug/
 
 # qt
 CMakeLists.txt.user
+
+*.swp
