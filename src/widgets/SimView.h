@@ -1,8 +1,8 @@
 #ifndef SIMVIEW_H
 #define SIMVIEW_H
 
-#include "Engine.h"
-#include "rendering/Renderer.h"
+#include "src/Engine.h"
+#include "src/rendering/Renderer.h"
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>

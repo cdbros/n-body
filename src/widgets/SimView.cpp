@@ -2,7 +2,7 @@
 
 SimView::SimView(QWidget *parent) : QOpenGLWidget(parent), m_renderer{std::make_unique<Renderer>(this)} {
     QSizePolicy spSimView(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    spSimView.setHorizontalStretch(2);
+    spSimView.setHorizontalStretch(3);
 
     setSizePolicy(spSimView);
     setObjectName(QString::fromUtf8("simView"));
