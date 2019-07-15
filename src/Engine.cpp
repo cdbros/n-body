@@ -58,14 +58,10 @@ Engine::Engine() :
     m_objs.reserve(approxObjCount);
     m_objCoords.reserve(approxObjCount * 3); // (x, y, z) per object
 
-    Body::Params p0( 0.0, 0.0, 1e10);
-    Body::Params p1(-0.5, 0.0, 1e2, 0.4);
-    Body::Params p2(0.5, 0.0, 1e2, 0.4);
-    Body::Params p3(0.55, 0.0, 1, 0.1);
+    Body::Params p0(0, 0, 0, 0, 1e10);
+    Body::Params p1(0.5, 0, 0, 0.5, 10);
     addObject(p0);
     addObject(p1);
-    addObject(p2);
-    addObject(p3);
 }
 
 void Engine::addObject(const Body::Params &params) {
