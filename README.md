@@ -7,7 +7,12 @@ Project uses C++17 along with Qt5 and OpenGL 4.1. Read about following:
 * [Qt5 Installation](https://www.qt.io/download)
 * [OpenGL 4.1](https://www.khronos.org/opengl/wiki/Getting_Started)
 
-### Compile and Build
+### Just Build and Run (from the main directory)
+
+```bash
+./make.sh
+```
+### Just Compile and Build
 
 ```bash
 mkdir bin
