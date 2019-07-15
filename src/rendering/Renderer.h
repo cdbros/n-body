@@ -2,12 +2,14 @@
 #define RENDERER_H
 
 #include <QObject>
-#include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
+#include <QOpenGLFunctions_4_1_Core>
 #include <memory>
 
-class Renderer : public QObject, protected QOpenGLFunctions {
+class Renderer : 
+        public QObject, 
+        protected QOpenGLFunctions_4_1_Core {
     Q_OBJECT
 
   public:
