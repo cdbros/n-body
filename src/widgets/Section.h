@@ -27,6 +27,7 @@
 #include <QScrollArea>
 #include <QToolButton>
 #include <QWidget>
+#include <memory>
 
 class Section : public QWidget {
     Q_OBJECT

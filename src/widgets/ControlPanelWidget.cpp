@@ -5,7 +5,7 @@
 
 ControlPanelWidget::ControlPanelWidget(QWidget *parent) : QWidget{parent} {
     QPalette pal = palette();
-    pal.setColor(QPalette::Window, QColor(99, 110, 114, 1.0));
+    pal.setColor(QPalette::Window, QColor::fromRgb(99, 110, 114));
     this->setAutoFillBackground(true);
     this->setPalette(pal);
 

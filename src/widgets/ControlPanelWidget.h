@@ -4,6 +4,7 @@
 
 #include <QWidget>
 #include <src/widgets/Section.h>
+#include <memory>
 
 class ControlPanelWidget : public QWidget {
     Q_OBJECT
