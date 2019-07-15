@@ -2,14 +2,12 @@
 #define RENDERER_H
 
 #include <QObject>
+#include <QOpenGLFunctions_4_1_Core>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
-#include <QOpenGLFunctions_4_1_Core>
 #include <memory>
 
-class Renderer : 
-        public QObject, 
-        protected QOpenGLFunctions_4_1_Core {
+class Renderer : public QObject, protected QOpenGLFunctions_4_1_Core {
     Q_OBJECT
 
   public:
@@ -17,7 +15,7 @@ class Renderer :
 
     void initialize();
     void render();
-    void resize(int width, int height);
+    inline void resize(int width, int height) noexcept { m_viewportSize = QSize(width, height); }
 
   public slots:
     void renderReady(const GLfloat *objCoords, std::size_t numObjs);
@@ -29,7 +27,8 @@ class Renderer :
 
     const GLfloat *m_objCoords = nullptr;
     std::size_t m_numObjs = 0;
-    GLfloat m_radius = 0.05f;;
+    GLfloat m_radius = 0.05f;
+    ;
     GLuint m_vao;
     GLuint m_vbo;
     GLuint m_eab;
