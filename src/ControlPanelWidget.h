@@ -4,7 +4,7 @@
 
 #include <QWidget>
 
-class ControlPanelWidget: public QWidget {
+class ControlPanelWidget : public QWidget {
     Q_OBJECT
 
   public:
