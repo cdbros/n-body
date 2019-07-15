@@ -1,6 +1,5 @@
 #include "MainWindow.h"
 #include <QHBoxLayout>
-#include <QShortcut>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
     if (objectName().isEmpty()) {
@@ -10,20 +9,23 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
     setWindowTitle("N Body");
     resize(1280, 720);
 
-    centralWidget = std::make_unique<QWidget>(this);
-    centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
+    m_centralWidget = std::make_unique<QWidget>(this);
+    m_centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
 
-    horizontalLayout = std::make_unique<QHBoxLayout>(centralWidget.get());
-    horizontalLayout->setSpacing(0);
-    horizontalLayout->setContentsMargins(0, 0, 0, 0);
-    horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+    m_horizontalLayout = std::make_unique<QHBoxLayout>(m_centralWidget.get());
+    m_horizontalLayout->setSpacing(0);
+    m_horizontalLayout->setContentsMargins(0, 0, 0, 0);
+    m_horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
 
-    setCentralWidget(centralWidget.get());
+    setCentralWidget(m_centralWidget.get());
 
     // simulation view and control panel
-    simView = std::make_unique<SimView>(centralWidget.get());
-    controlPanel = std::make_unique<ControlPanelWidget>(centralWidget.get());
+    m_simView = std::make_unique<SimView>(m_centralWidget.get());
+    m_controlPanel = std::make_unique<ControlPanelWidget>(m_centralWidget.get());
 
-    horizontalLayout->addWidget(simView.get());
-    horizontalLayout->addWidget(controlPanel.get());
+    m_horizontalLayout->addWidget(m_simView.get());
+    m_horizontalLayout->addWidget(m_controlPanel.get());
+
+    m_closeShortcut = std::make_unique<QShortcut>(QKeySequence::Close, this);
+    QObject::connect(m_closeShortcut.get(), &QShortcut::activated, this, [this]() { this->close(); });
 }
