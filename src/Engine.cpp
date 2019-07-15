@@ -1,21 +1,12 @@
 #include "Engine.h"
-#include <limits>
 #include <cmath>
+#include <limits>
 
 static constexpr double G = 6.673e-11; // gravitational constant
 static constexpr double solarmass = 1.98892e30;
 
-Body::Body(const Params &params) :
-    rx(params.x0),
-    ry(params.y0),
-    vx(params.vx0),
-    vy(params.vy0),
-    ax(0),
-    ay(0),
-    fx(0),
-    fy(0),
-    mass(params.mass)
-{ }
+Body::Body(const Params &params)
+    : rx(params.x0), ry(params.y0), vx(params.vx0), vy(params.vy0), ax(0), ay(0), fx(0), fy(0), mass(params.mass) {}
 
 void Body::step(long double dt) {
     // Do calculations in higher precision
@@ -49,11 +40,7 @@ void Body::addGravity(Body &b) {
     b.fy -= fgy;
 }
 
-Engine::Engine() :
-    m_objs{},
-    m_objCoords{},
-    m_zIndex(0.0f)
-{
+Engine::Engine() : m_objs{}, m_objCoords{}, m_zIndex(0.0f) {
     constexpr std::size_t approxObjCount = 16384;
     m_objs.reserve(approxObjCount);
     m_objCoords.reserve(approxObjCount * 3); // (x, y, z) per object
@@ -68,7 +55,7 @@ void Engine::addObject(const Body::Params &params) {
     constexpr GLfloat zStep = 0.00001f;
 
     // Initialize object velocity and mass
-    Body obj{ params };
+    Body obj{params};
     auto &newObj = m_objs.emplace_back(obj);
     // Track coordinate vector before/after capacity
     auto prevCapacity = m_objCoords.capacity();
@@ -102,20 +89,12 @@ void Engine::step(unsigned long long ticks, unsigned tickStep) {
     }
 }
 
-const GLfloat *Engine::getObjCoords() const {
-    return m_objCoords.data();
-}
+const GLfloat *Engine::getObjCoords() const { return m_objCoords.data(); }
 
-std::size_t Engine::getNumObjs() const {
-    return m_objs.size();
-}
+std::size_t Engine::getNumObjs() const { return m_objs.size(); }
 
-EngineThread::EngineThread(unsigned tickStep) :
-    m_engine{},
-    m_tickStep(tickStep),
-    m_shouldRun(true),
-    m_rateLimit(true)
-{ }
+EngineThread::EngineThread(unsigned tickStep)
+    : m_engine{}, m_tickStep(tickStep), m_shouldRun(true), m_rateLimit(true) {}
 
 inline auto getTimeUsec() {
     using namespace std::chrono;

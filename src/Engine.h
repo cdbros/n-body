@@ -1,7 +1,7 @@
 #pragma once
 
-#include <QThread>
 #include <QOpenGLFunctions>
+#include <QThread>
 #include <vector>
 
 class Body {
@@ -9,11 +9,9 @@ class Body {
 
   public:
     struct Params {
-        inline explicit Params(
-                long double x0 = 0, long double y0 = 0,
-                long double vx0 = 0, long double vy0 = 0,
-                long double mass = 0) :
-            x0{x0}, y0{y0}, vx0{vx0}, vy0{vy0}, mass{mass} {}
+        inline explicit Params(long double x0 = 0, long double y0 = 0, long double vx0 = 0, long double vy0 = 0,
+                               long double mass = 0)
+            : x0{x0}, y0{y0}, vx0{vx0}, vy0{vy0}, mass{mass} {}
 
         long double x0, y0;
         long double vx0, vy0;
