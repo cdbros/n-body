@@ -58,29 +58,10 @@ Engine::Engine() :
     m_objs.reserve(approxObjCount);
     m_objCoords.reserve(approxObjCount * 3); // (x, y, z) per object
 
-    Body::Params p0 = {
-        .x0 = 0.0,
-        .y0 = 0.0,
-        .mass = 1e10,
-    };
-    Body::Params p1 = {
-        .x0 = -0.5,
-        .y0 = 0.0,
-        .mass = 1e2,
-        .vy0 = -0.4,
-    };
-    Body::Params p2 = {
-        .x0 = 0.5,
-        .y0 = 0.0,
-        .mass = 1e2,
-        .vy0 = 0.4,
-    };
-    Body::Params p3 = {
-        .x0 = 0.55,
-        .y0 = 0.0,
-        .mass = 1,
-        .vy0 = -0.1
-    };
+    Body::Params p0( 0.0, 0.0, 1e10);
+    Body::Params p1(-0.5, 0.0, 1e2, 0.4);
+    Body::Params p2(0.5, 0.0, 1e2, 0.4);
+    Body::Params p3(0.55, 0.0, 1, 0.1);
     addObject(p0);
     addObject(p1);
     addObject(p2);
