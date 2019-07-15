@@ -5,6 +5,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
+#include <memory>
 
 class Renderer : public QObject, protected QOpenGLFunctions {
     Q_OBJECT
