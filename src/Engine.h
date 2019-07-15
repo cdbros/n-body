@@ -9,7 +9,7 @@ class Body {
 
   public:
     struct Params {
-        inline Params(
+        inline explicit Params(
                 long double x0 = 0, long double y0 = 0,
                 long double vx0 = 0, long double vy0 = 0,
                 long double mass = 0) :
@@ -21,7 +21,7 @@ class Body {
     };
 
   private:
-    Body(const Params &params);
+    explicit Body(const Params &params);
 
   private:
     void step(long double dt);
@@ -46,8 +46,8 @@ class Engine {
   public:
     void addObject(const Body::Params &params);
     void step(unsigned long long ticks, unsigned tickStep);
-    const GLfloat *getObjCoords() const;
-    std::size_t getNumObjs() const;
+    [[nodiscard]] const GLfloat *getObjCoords() const;
+    [[nodiscard]] std::size_t getNumObjs() const;
 
   private:
     std::vector<Body> m_objs;
@@ -62,7 +62,7 @@ class EngineThread : public QThread {
     void run() override;
 
   public:
-    EngineThread(unsigned tickStep = 20);
+    explicit EngineThread(unsigned tickStep = 20);
 
     inline void stopEngine() { m_shouldRun = false; }
 

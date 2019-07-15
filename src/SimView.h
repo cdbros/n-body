@@ -1,8 +1,8 @@
 #ifndef SIMVIEW_H
 #define SIMVIEW_H
 
-#include "rendering/Renderer.h"
 #include "Engine.h"
+#include "rendering/Renderer.h"
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
@@ -13,7 +13,7 @@ class SimView : public QOpenGLWidget {
 
   public:
     explicit SimView(QWidget *parent = nullptr);
-    ~SimView();
+    ~SimView() override;
 
     void initializeGL() override;
     void paintGL() override;
