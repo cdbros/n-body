@@ -61,11 +61,7 @@ auto check_err(func_t func_call, int line, std::string file, std::string func, s
     return ret;
 }
 
-
-Renderer::Renderer(QOpenGLWidget *openGLView) :
-    m_openGLView{openGLView},
-    QObject(openGLView)
-{ }
+Renderer::Renderer(QOpenGLWidget *openGLView) : m_openGLView{openGLView}, QObject(openGLView) {}
 
 void Renderer::initialize() {
     initializeOpenGLFunctions();
@@ -78,15 +74,12 @@ void Renderer::initialize() {
     gl_check(m_program->link());
 
     GLfloat vertices[] = {
-        -m_radius, -m_radius,
-        -m_radius,  m_radius,
-         m_radius,  m_radius,
-         m_radius, -m_radius,
+        -m_radius, -m_radius, -m_radius, m_radius, m_radius, m_radius, m_radius, -m_radius,
     };
     GLuint indices[] = {
         0, 1, 2, 2, 3, 0,
     };
-    //GLfloat offsets[] = {
+    // GLfloat offsets[] = {
     //    0.0f, 0.0f, 0.2f, 0.5f, 0.5f, 0.1f, -0.5f, -0.5f, 0.0f,
     //};
 
@@ -104,7 +97,7 @@ void Renderer::initialize() {
     gl_check(glEnableVertexAttribArray(pos_loc));
 
     gl_check(glBindBuffer(GL_ARRAY_BUFFER, m_obo));
-    //gl_check(glBufferData(GL_ARRAY_BUFFER, sizeof(offsets), offsets, GL_STATIC_DRAW));
+    // gl_check(glBufferData(GL_ARRAY_BUFFER, sizeof(offsets), offsets, GL_STATIC_DRAW));
     int offset_loc = gl_check(m_program->attributeLocation("offset"));
     gl_check(glEnableVertexAttribArray(offset_loc));
     gl_check(glVertexAttribPointer(offset_loc, 3, GL_FLOAT, GL_FALSE, 0, 0));
@@ -126,10 +119,6 @@ void Renderer::initialize() {
     gl_check(glBindBuffer(GL_ARRAY_BUFFER, 0));
     gl_check(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
     gl_check(glBindVertexArray(0));
-
-    m_viewportSize = { m_openGLView->width(), m_openGLView->height() };
-
-    std::cout << m_viewportSize.width() << "," << m_viewportSize.height()  << std::endl;
 }
 
 void Renderer::renderReady(const GLfloat *objCoords, std::size_t numObjs) {
@@ -141,9 +130,6 @@ void Renderer::renderReady(const GLfloat *objCoords, std::size_t numObjs) {
 void Renderer::render() {
     m_program->bind();
 
-    gl_check(glViewport(0, 0, m_viewportSize.width(), m_viewportSize.height()));
-    gl_check(glScissor(0, 0, m_viewportSize.width(), m_viewportSize.height()));
-    gl_check(glEnable(GL_SCISSOR_TEST));
     gl_check(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
     gl_check(glClear(GL_COLOR_BUFFER_BIT));
 
@@ -161,7 +147,4 @@ void Renderer::render() {
     gl_check(glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, m_numObjs));
 
     m_program->release();
-}
-
-void Renderer::resize(int width, int height) {
 }
