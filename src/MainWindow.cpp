@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include <QHBoxLayout>
+#include <QShortcut>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
     if (objectName().isEmpty()) {
