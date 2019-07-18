@@ -27,5 +27,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
     m_horizontalLayout->addWidget(m_controlPanel.get());
 
     m_closeShortcut = std::make_unique<QShortcut>(QKeySequence::Close, this);
-    QObject::connect(m_closeShortcut.get(), &QShortcut::activated, this, [this]() { this->close(); });
+
+    QObject::connect(m_closeShortcut.get(),
+                     &QShortcut::activated,
+                     this,
+                     [this]() { this->close(); });
 }
