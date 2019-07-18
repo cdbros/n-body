@@ -109,6 +109,7 @@ void Renderer::initialize() {
     int mvp_loc = gl_check(m_program->uniformLocation("mvp"));
     QMatrix4x4 mvp;
     mvp.setToIdentity();
+    mvp.scale(m_zoom);
     gl_check(m_program->bind());
     gl_check(m_program->setUniformValue(mvp_loc, mvp));
 
