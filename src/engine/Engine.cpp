@@ -57,8 +57,13 @@ inline auto getTimeUsec() {
 
 
 #include <iostream>
+#include <cstdlib>
 
 void Engine::takeMetrics() {
+    static std::size_t magCount = 0;
+    static double start = getTimeUsec();
+    ++magCount;
+
     if (m_lastTime == 0.0) {
         m_lastTime = getTimeUsec();
         m_frameCount = 0;
@@ -70,23 +75,31 @@ void Engine::takeMetrics() {
         std::cout << "FPS: " << framesPerSec << std::endl;
         m_frameCount = 0;
     }
+    if (magCount == 60000*100) {
+        std::cout << "MAG_COUNT: " << std::endl;
+        auto &o = m_objs[3];
+        std::cout << (getTimeUsec() - start) / 1e+6 << std::endl;
+        std::cout << o.rx << std::endl;
+        std::cout << o.ry << std::endl;
+        std::cout << o.vx << std::endl;
+        std::cout << o.vy << std::endl;
+        exit(0);
+    }
 }
 
 void Engine::step(unsigned tickStep) {
     constexpr long double usec_to_sec = 1.0e+6;
-    // h = timeStep
     long double h = tickStep / usec_to_sec * Config::TIME_SCALE;
     long double halfh = 0.5 * h;
 
-    /*for (auto i = 0; i < m_objs.size(); ++i) {
+    long double hGMi = h * Config::G;
+    for (auto i = 0; i < m_objs.size(); ++i) {
 
         auto &obj = m_objs[i];
-        auto &ri_x = obj.rx;
-        auto &ri_y = obj.ry;
-        auto &vi_x = obj.vx;
-        auto &vi_y = obj.vy;
-
-        long double hGMi = h * Config::G;
+        auto ri_x = obj.rx;
+        auto ri_y = obj.ry;
+        auto vi_x = obj.vx;
+        auto vi_y = obj.vy;
 
         // f(t, r, v) = v
         // g(t, r, v) = G*Mi sum(j != i, Mj/|rj-r|^3 (rj-r)
@@ -120,8 +133,8 @@ void Engine::step(unsigned tickStep) {
         // l1 = h * g(..., ri + k0/2, ...)
         long double l1_x = 0;
         long double l1_y = 0;
-        long double half_k0_x = 0.5 * k1_x;
-        long double half_k0_y = 0.5 * k1_y;
+        long double half_k0_x = 0.5 * k0_x;
+        long double half_k0_y = 0.5 * k0_y;
         for (auto j = 0; j < m_objs.size(); ++j) {
             if (j == i) { continue; }
             auto &other = m_objs[j];
@@ -184,20 +197,53 @@ void Engine::step(unsigned tickStep) {
         l3_x *= hGMi;
         l3_y *= hGMi;
 
-        ri_x += (k0_x + 2 * k1_x + 2 * k2_x + k3_x) / 6;
-        ri_y += (k0_y + 2 * k1_y + 2 * k2_y + k3_y) / 6;
-        vi_x += (l0_x + 2 * l1_x + 2 * l2_x + l3_x) / 6;
-        vi_y += (l0_y + 2 * l1_y + 2 * l2_y + l3_y) / 6;
+        obj.rx += (k0_x + 2 * k1_x + 2 * k2_x + k3_x) / 6;
+        obj.ry += (k0_y + 2 * k1_y + 2 * k2_y + k3_y) / 6;
+        obj.vx += (l0_x + 2 * l1_x + 2 * l2_x + l3_x) / 6;
+        obj.vy += (l0_y + 2 * l1_y + 2 * l2_y + l3_y) / 6;
 
-        *obj.px = Config::DISTANCE_SCALE * static_cast<GLfloat>(ri_x);
-        *obj.py = Config::DISTANCE_SCALE * static_cast<GLfloat>(ri_y);
+        *obj.px = Config::DISTANCE_SCALE * static_cast<GLfloat>(obj.rx);
+        *obj.py = Config::DISTANCE_SCALE * static_cast<GLfloat>(obj.ry);
+    }
+
+    /*typedef long double ldbl;
+    auto endIt = std::end(m_objs);
+    for (auto &o : m_objs) {
+        o.fx = 0;
+        o.fy = 0;
+    }
+    for (auto i = std::begin(m_objs); i != endIt; ++i) {
+        auto &oi = *i;
+        for (auto j = std::next(i); j != endIt; ++j) {
+            auto &oj = *j;
+            ldbl dx = oj.rx - oi.rx;
+            ldbl dy = oj.ry - oi.ry;
+            ldbl rsq = dx * dx + dy * dy;
+            ldbl r = sqrt(rsq);
+            ldbl F = Config::G * oi.mass * oj.mass / rsq;
+            ldbl fx = F * dx / r;
+            ldbl fy = F * dy / r;
+            oi.fx += fx;
+            oi.fy += fy;
+            oj.fx -= fx;
+            oj.fy -= fy;
+        }
+        oi.ax = oi.fx / oi.mass;
+        oi.ay = oi.fy / oi.mass;
+        ldbl dtax = h * oi.ax;
+        ldbl dtay = h * oi.ay;
+        oi.rx += h * oi.vx + halfh * dtax;
+        oi.ry += h * oi.vy + halfh * dtay;
+        oi.vx += dtax;
+        oi.vy += dtay;
+
+        *oi.px = Config::DISTANCE_SCALE * oi.rx;
+        *oi.py = Config::DISTANCE_SCALE * oi.ry;
     }*/
-
-    typedef long double ldbl;
-    for (auto i = 0; i < m_objs.size(); ++i) {
+    /*for (auto i = 0; i < sz; ++i) {
         ldbl Fx = 0;
         ldbl Fy = 0;
-        for (auto j = 0; j < m_objs.size(); ++j) {
+        for (auto j = i; j < sz; ++j) {
             if (j == i) { continue; }
             ldbl dx = m_objs[j].rx - m_objs[i].rx;
             ldbl dy = m_objs[j].ry - m_objs[i].ry;
@@ -216,19 +262,19 @@ void Engine::step(unsigned tickStep) {
 
         *m_objs[i].px = Config::DISTANCE_SCALE * m_objs[i].rx;
         *m_objs[i].py = Config::DISTANCE_SCALE * m_objs[i].ry;
-    }
+    }*/
 
-    //for (auto &obj : m_objs) {
-    //    obj.resetForce();
-    //}
-    //for (auto flIt = std::begin(m_objs); flIt != std::end(m_objs); ++flIt) {
-    //    for (auto slIt = std::next(flIt); slIt != std::end(m_objs); ++slIt) {
-    //        flIt->addGravity(*slIt);
-    //    }
-    //}
-    //for (auto &obj : m_objs) {
-    //    obj.step(dt);
-    //}
+    /*for (auto &obj : m_objs) {
+        obj.resetForce();
+    }
+    for (auto flIt = std::begin(m_objs); flIt != std::end(m_objs); ++flIt) {
+        for (auto slIt = std::next(flIt); slIt != std::end(m_objs); ++slIt) {
+            flIt->addGravity(*slIt);
+        }
+    }
+    for (auto &obj : m_objs) {
+        obj.step(h);
+    }*/
 }
 
 RendererInterface Engine::getParams() const {
