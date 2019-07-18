@@ -1,6 +1,11 @@
 #include "Engine.h"
 #include "Config.h"
+<<<<<<< HEAD
 #include <cmath>
+=======
+#include <algorithm>
+#include <functional>
+>>>>>>> upstream/master
 
 Engine::Engine() : m_objs{}, m_objCoords{}, m_objRadii{}, m_zIndex(0.0f) {
     constexpr std::size_t approxObjCount = 16384;
