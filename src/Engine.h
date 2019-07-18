@@ -9,13 +9,19 @@ class Body {
 
   public:
     struct Params {
-        inline explicit Params(long double x0 = 0, long double y0 = 0, long double vx0 = 0, long double vy0 = 0,
-                               long double mass = 0)
-            : x0{x0}, y0{y0}, vx0{vx0}, vy0{vy0}, mass{mass} {}
+        inline explicit Params(
+                long double x0 = 0,
+                long double y0 = 0,
+                long double vx0 = 0,
+                long double vy0 = 0,
+                long double mass = 0,
+                long double radius = 0)
+            : x0{x0}, y0{y0}, vx0{vx0}, vy0{vy0}, mass{mass}, radius{radius} {}
 
         long double x0, y0;
         long double vx0, vy0;
         long double mass;
+        long double radius;
     };
 
   private:
@@ -32,9 +38,16 @@ class Body {
     long double ax, ay;
     long double fx, fy;
     long double mass;
+    long double radius;
 
     std::vector<GLfloat>::iterator px;
     std::vector<GLfloat>::iterator py;
+};
+
+struct RendererInterface {
+    const GLfloat *objCoords;
+    const GLfloat *objRadii;
+    std::size_t numObjs;
 };
 
 class Engine {
@@ -44,12 +57,12 @@ class Engine {
   public:
     void addObject(const Body::Params &params);
     void step(unsigned tickStep);
-    [[nodiscard]] const GLfloat *getObjCoords() const;
-    [[nodiscard]] std::size_t getNumObjs() const;
+    [[nodiscard]] RendererInterface getParams() const;
 
   private:
     std::vector<Body> m_objs;
     std::vector<GLfloat> m_objCoords;
+    std::vector<GLfloat> m_objRadii;
     GLfloat m_zIndex;
 };
 
@@ -60,12 +73,13 @@ class EngineThread : public QThread {
     void run() override;
 
   public:
-    explicit EngineThread(unsigned tickStep = 50);
+    explicit EngineThread(unsigned tickStep = 70);
 
     inline void stopEngine() { m_shouldRun = false; }
 
   signals:
-    void renderReady(const GLfloat *objCoords, std::size_t numObjs);
+    void updateParams(RendererInterface params);
+    void renderReady();
 
   private:
     Engine m_engine;
