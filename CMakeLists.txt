@@ -22,6 +22,7 @@ set(OTHER_FILES "README.md")
 
 add_executable(${PROJECT_NAME} ${SRCS} ${HDRS} ${QML} ${OTHER_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
+target_compile_options(${PROJECT_NAME} PUBLIC "-O2")
 
 if (WIN32)
     set_property(TARGET ${PROJECT_NAME} PROPERTY WIN32_EXECUTABLE true)
