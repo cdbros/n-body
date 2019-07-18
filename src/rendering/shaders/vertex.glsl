@@ -2,15 +2,19 @@ R"glsl(
 
 #version 410 core
 
-layout (location = 0) in vec2 pos;
-layout (location = 1) in vec3 offset;
+in vec2 pos;
+in vec3 offset;
+in float radius;
 
 uniform mat4 mvp;
+
 out vec2 vpos;
+out float vradius;
 
 void main() {
-    vpos = pos;
-    gl_Position = mvp * vec4(pos.x + offset.x, pos.y + offset.y, offset.z, 1.0);
+    vpos = radius * pos;
+    vradius = radius;
+    gl_Position = mvp * vec4(vpos.x + offset.x, vpos.y + offset.y, offset.z, 1.0);
 }
 
 )glsl"

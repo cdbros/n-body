@@ -74,34 +74,40 @@ void Renderer::initialize() {
     gl_check(m_program->link());
 
     GLfloat vertices[] = {
-        -m_radius, -m_radius, -m_radius, m_radius, m_radius, m_radius, m_radius, -m_radius,
+        -1.0f, -1.0f,
+        -1.0f, 1.0f,
+        1.0f, 1.0f,
+        1.0f, -1.0f,
     };
     GLuint indices[] = {
         0, 1, 2, 2, 3, 0,
     };
-    // GLfloat offsets[] = {
-    //    0.0f, 0.0f, 0.2f, 0.5f, 0.5f, 0.1f, -0.5f, -0.5f, 0.0f,
-    //};
 
     gl_check(glGenVertexArrays(1, &m_vao));
     gl_check(glGenBuffers(1, &m_vbo));
     gl_check(glGenBuffers(1, &m_eab));
     gl_check(glGenBuffers(1, &m_obo));
+    gl_check(glGenBuffers(1, &m_rbo));
 
     gl_check(glBindVertexArray(m_vao));
 
     gl_check(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
     gl_check(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
-    int pos_loc = gl_check(m_program->attributeLocation("pos"));
+    auto pos_loc = gl_check(m_program->attributeLocation("pos"));
     gl_check(glVertexAttribPointer(pos_loc, 2, GL_FLOAT, GL_FALSE, 0, 0));
     gl_check(glEnableVertexAttribArray(pos_loc));
 
     gl_check(glBindBuffer(GL_ARRAY_BUFFER, m_obo));
-    // gl_check(glBufferData(GL_ARRAY_BUFFER, sizeof(offsets), offsets, GL_STATIC_DRAW));
-    int offset_loc = gl_check(m_program->attributeLocation("offset"));
+    auto offset_loc = gl_check(m_program->attributeLocation("offset"));
     gl_check(glEnableVertexAttribArray(offset_loc));
     gl_check(glVertexAttribPointer(offset_loc, 3, GL_FLOAT, GL_FALSE, 0, 0));
     gl_check(glVertexAttribDivisor(offset_loc, 1));
+
+    gl_check(glBindBuffer(GL_ARRAY_BUFFER, m_rbo));
+    auto radius_loc = gl_check(m_program->attributeLocation("radius"));
+    gl_check(glEnableVertexAttribArray(radius_loc));
+    gl_check(glVertexAttribPointer(radius_loc, 1, GL_FLOAT, GL_FALSE, 0, 0));
+    gl_check(glVertexAttribDivisor(radius_loc, 1));
 
     gl_check(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eab));
     gl_check(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
@@ -110,11 +116,9 @@ void Renderer::initialize() {
     QMatrix4x4 mvp;
     mvp.setToIdentity();
     mvp.scale(m_zoom);
+    mvp.translate(m_camX, m_camY);
     gl_check(m_program->bind());
     gl_check(m_program->setUniformValue(mvp_loc, mvp));
-
-    int radius_loc = gl_check(m_program->uniformLocation("radius"));
-    gl_check(m_program->setUniformValue(radius_loc, m_radius));
 
     gl_check(m_program->release());
     gl_check(glBindBuffer(GL_ARRAY_BUFFER, 0));
@@ -122,9 +126,13 @@ void Renderer::initialize() {
     gl_check(glBindVertexArray(0));
 }
 
-void Renderer::renderReady(const GLfloat *objCoords, const std::size_t numObjs) {
-    m_objCoords = objCoords;
-    m_numObjs = numObjs;
+void Renderer::updateParams(RendererInterface params) {
+    m_engineParams = params;
+    gl_check(glBindBuffer(GL_ARRAY_BUFFER, m_rbo));
+    gl_check(glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * m_engineParams.numObjs, m_engineParams.objRadii, GL_STATIC_DRAW));
+}
+
+void Renderer::renderReady() {
     m_openGLView->update();
 }
 
@@ -140,12 +148,13 @@ void Renderer::render() {
 
     gl_check(glBindVertexArray(m_vao));
 
+    // Coordinates updates on each render
     gl_check(glBindBuffer(GL_ARRAY_BUFFER, m_obo));
-    gl_check(glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat) * m_numObjs, m_objCoords, GL_DYNAMIC_DRAW));
+    gl_check(glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat) * m_engineParams.numObjs, m_engineParams.objCoords, GL_DYNAMIC_DRAW));
 
     gl_check(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
     gl_check(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eab));
-    gl_check(glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, m_numObjs));
+    gl_check(glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, m_engineParams.numObjs));
 
     m_program->release();
 }

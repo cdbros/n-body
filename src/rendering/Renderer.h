@@ -1,6 +1,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include "../Engine.h"
 #include <QObject>
 #include <QOpenGLFunctions_4_1_Core>
 #include <QOpenGLShaderProgram>
@@ -15,24 +16,28 @@ class Renderer : public QObject, protected QOpenGLFunctions_4_1_Core {
 
     void initialize();
     void render();
-    inline void resize(int width, int height) noexcept { m_viewportSize = QSize(width, height); }
+    inline void resize(int width, int height) noexcept { }
 
   public slots:
-    void renderReady(const GLfloat *objCoords, std::size_t numObjs);
+    void updateParams(RendererInterface params);
+    void renderReady();
 
   private:
     QOpenGLWidget *m_openGLView;
-    QSize m_viewportSize{};
     std::unique_ptr<QOpenGLShaderProgram> m_program{};
 
-    const GLfloat *m_objCoords = nullptr;
-    std::size_t m_numObjs = 0;
-    GLfloat m_radius = 0.05f;
+    RendererInterface m_engineParams{};
+
+    GLfloat m_radius = 0.02f;
     GLfloat m_zoom = 1.0f;
+    GLfloat m_camX = 0.0f;
+    GLfloat m_camY = 0.0f;
+
     GLuint m_vao{};
     GLuint m_vbo{};
     GLuint m_eab{};
     GLuint m_obo{};
+    GLuint m_rbo{};
 };
 
 #endif // RENDERER_H

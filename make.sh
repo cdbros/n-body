@@ -7,4 +7,4 @@
 # Make folder if it doesn't exist before.
 mkdir -p bin;
 cd bin;
-cmake ../ && make && ./n-body;
+cmake ../ && make -j4 && ./n-body;

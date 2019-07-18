@@ -1,5 +1,7 @@
 #include "SimView.h"
 
+Q_DECLARE_METATYPE(RendererInterface);
+
 SimView::SimView(QWidget *parent) : QOpenGLWidget(parent), m_renderer{std::make_unique<Renderer>(this)} {
     QSizePolicy spSimView(QSizePolicy::Preferred, QSizePolicy::Preferred);
     spSimView.setHorizontalStretch(3);
@@ -16,6 +18,8 @@ SimView::~SimView() {
 
 void SimView::initializeGL() {
     m_renderer->initialize();
+    qRegisterMetaType<RendererInterface>();
+    connect(&m_engineThread, &EngineThread::updateParams, m_renderer.get(), &Renderer::updateParams);
     connect(&m_engineThread, &EngineThread::renderReady, m_renderer.get(), &Renderer::renderReady);
     m_engineThread.start();
 }

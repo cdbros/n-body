@@ -4,11 +4,11 @@
 
 static constexpr long double G = 6.673e-11;
 static constexpr long double solarmass = 1.98892e30;
-static constexpr long double distance_scale = 2e-8;
+static constexpr long double distance_scale = 1e-8;
 static constexpr long double time_scale = 1.0;
 
 Body::Body(const Params &params)
-    : rx(params.x0), ry(params.y0), vx(params.vx0), vy(params.vy0), ax(0), ay(0), fx(0), fy(0), mass(params.mass) {}
+    : rx(params.x0), ry(params.y0), vx(params.vx0), vy(params.vy0), ax(0), ay(0), fx(0), fy(0), mass(params.mass), radius(params.radius) {}
 
 void Body::step(long double dt) {
     // Do calculations in higher precision
@@ -48,19 +48,24 @@ void Body::addGravity(Body &b) {
     b.fy -= fgy;
 }
 
-Engine::Engine() : m_objs{}, m_objCoords{}, m_zIndex(0.0f) {
+Engine::Engine() : m_objs{}, m_objCoords{}, m_objRadii{}, m_zIndex(0.0f) {
     constexpr std::size_t approxObjCount = 16384;
     m_objs.reserve(approxObjCount);
     m_objCoords.reserve(approxObjCount * 3); // (x, y, z) per object
+    m_objRadii.reserve(approxObjCount);
 
-    Body::Params p0(0, 0, 0, 0, 5.972e+29);
-    Body::Params p1(0, 9000e+3, 2500e+3, 0, 200e+3);
-    Body::Params p2(10000e+3, 0, 0, -2000e+3, 200e+3);
-    Body::Params p3(20000e+3, 0, 1000e+3, 1000e+3, 200e+3);
+    Body::Params p0(-3000e+3, 0, 0,  2000e+3, 5.972e+29, 1000e+3);
+    Body::Params p4( 3000e+3, 0, 0, -2000e+3, 6.000e+29, 1000e+3);
+
+    Body::Params p3(    0,       -38e+6,    -12e+5,     0,          500e+3, 500e+3);
+    Body::Params p2(    40e+6,   0,         100e+3,     -11e+5,     200e+3, 500e+3);
+    Body::Params p1(    0,       37e+6,     12e+5,      0,          300e+3, 500e+3);
+
     addObject(p0);
     addObject(p1);
     addObject(p2);
     addObject(p3);
+    addObject(p4);
 }
 
 void Engine::addObject(const Body::Params &params) {
@@ -69,10 +74,15 @@ void Engine::addObject(const Body::Params &params) {
     // Initialize object velocity and mass
     Body obj{params};
     auto &newObj = m_objs.emplace_back(obj);
+
     // Track coordinate vector before/after capacity
     auto prevCapacity = m_objCoords.capacity();
     auto newCoords = m_objCoords.insert(std::end(m_objCoords), 3, static_cast<GLfloat>(m_zIndex -= zStep));
     auto nextCapacity = m_objCoords.capacity();
+
+    // Track other parameters
+    m_objRadii.push_back(static_cast<GLfloat>(distance_scale * obj.radius));
+
     if (prevCapacity != nextCapacity) {
         // Vector has resized and iterators invalidated
         auto coordIt = std::begin(m_objCoords);
@@ -87,7 +97,8 @@ void Engine::addObject(const Body::Params &params) {
 }
 
 void Engine::step(unsigned tickStep) {
-    long double dt = tickStep / 1000000.0f * time_scale;
+    constexpr long double usec_to_sec = 1.0e+6;
+    long double dt = tickStep / usec_to_sec * time_scale;
     for (auto &obj : m_objs) {
         obj.resetForce();
     }
@@ -101,9 +112,13 @@ void Engine::step(unsigned tickStep) {
     }
 }
 
-const GLfloat *Engine::getObjCoords() const { return m_objCoords.data(); }
-
-std::size_t Engine::getNumObjs() const { return m_objs.size(); }
+RendererInterface Engine::getParams() const {
+    return {
+        .objCoords = m_objCoords.data(),
+        .objRadii = m_objRadii.data(),
+        .numObjs = m_objs.size(),
+    };
+}
 
 EngineThread::EngineThread(unsigned tickStep)
     : m_engine{}, m_tickStep(tickStep), m_shouldRun(true), m_rateLimit(false) {}
@@ -115,10 +130,11 @@ inline auto getTimeUsec() {
 
 void EngineThread::run() {
     decltype(getTimeUsec()) lastRenderTime;
+    emit updateParams(m_engine.getParams());
     while (m_shouldRun) {
         lastRenderTime = getTimeUsec();
         m_engine.step(m_tickStep);
-        emit renderReady(m_engine.getObjCoords(), m_engine.getNumObjs());
+        emit renderReady();
         auto delta = getTimeUsec() - lastRenderTime;
         if (m_rateLimit && delta < m_tickStep) {
             usleep(m_tickStep - delta);
