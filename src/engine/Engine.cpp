@@ -1,5 +1,7 @@
 #include "Engine.h"
 #include "Config.h"
+#include <algorithm>
+#include <functional>
 
 Engine::Engine() : m_objs{}, m_objCoords{}, m_objRadii{}, m_zIndex(0.0f) {
     constexpr std::size_t approxObjCount = 16384;
@@ -52,17 +54,11 @@ void Engine::addObject(const Body::Params &params) {
 void Engine::step(unsigned tickStep) {
     constexpr long double usec_to_sec = 1.0e+6;
     long double dt = tickStep / usec_to_sec * Config::TIME_SCALE;
-    for (auto &obj : m_objs) {
-        obj.resetForce();
-    }
+    for_each(m_objs.begin(), m_objs.end(), std::mem_fn(&Body::resetForce));
     for (auto flIt = std::begin(m_objs); flIt != std::end(m_objs); ++flIt) {
-        for (auto slIt = std::next(flIt); slIt != std::end(m_objs); ++slIt) {
-            flIt->addGravity(*slIt);
-        }
+        for_each(std::next(flIt), m_objs.end(), [&](Body &b) {flIt->addGravity(b);});
     }
-    for (auto &obj : m_objs) {
-        obj.step(dt);
-    }
+    for_each(m_objs.begin(), m_objs.end(), [&](Body &b) {b.step(dt);});
 }
 
 RendererInterface Engine::getParams() const {
