@@ -8,7 +8,8 @@ static constexpr long double distance_scale = 1e-8;
 static constexpr long double time_scale = 1.0;
 
 Body::Body(const Params &params)
-    : rx(params.x0), ry(params.y0), vx(params.vx0), vy(params.vy0), ax(0), ay(0), fx(0), fy(0), mass(params.mass), radius(params.radius) {}
+    : rx(params.x0), ry(params.y0), vx(params.vx0), vy(params.vy0), ax(0), ay(0), fx(0), fy(0), mass(params.mass),
+      radius(params.radius) {}
 
 void Body::step(long double dt) {
     // Do calculations in higher precision
@@ -54,12 +55,12 @@ Engine::Engine() : m_objs{}, m_objCoords{}, m_objRadii{}, m_zIndex(0.0f) {
     m_objCoords.reserve(approxObjCount * 3); // (x, y, z) per object
     m_objRadii.reserve(approxObjCount);
 
-    Body::Params p0(-3000e+3, 0, 0,  2000e+3, 5.972e+29, 1000e+3);
-    Body::Params p4( 3000e+3, 0, 0, -2000e+3, 6.000e+29, 1000e+3);
+    Body::Params p0(-3000e+3, 0, 0, 2000e+3, 5.972e+29, 1000e+3);
+    Body::Params p4(3000e+3, 0, 0, -2000e+3, 6.000e+29, 1000e+3);
 
-    Body::Params p3(    0,       -38e+6,    -12e+5,     0,          500e+3, 500e+3);
-    Body::Params p2(    40e+6,   0,         100e+3,     -11e+5,     200e+3, 500e+3);
-    Body::Params p1(    0,       37e+6,     12e+5,      0,          300e+3, 500e+3);
+    Body::Params p3(0, -38e+6, -12e+5, 0, 500e+3, 500e+3);
+    Body::Params p2(40e+6, 0, 100e+3, -11e+5, 200e+3, 500e+3);
+    Body::Params p1(0, 37e+6, 12e+5, 0, 300e+3, 500e+3);
 
     addObject(p0);
     addObject(p1);
