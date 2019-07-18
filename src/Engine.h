@@ -43,7 +43,7 @@ class Engine {
 
   public:
     void addObject(const Body::Params &params);
-    void step(unsigned long long ticks, unsigned tickStep);
+    void step(unsigned tickStep);
     [[nodiscard]] const GLfloat *getObjCoords() const;
     [[nodiscard]] std::size_t getNumObjs() const;
 
@@ -60,7 +60,7 @@ class EngineThread : public QThread {
     void run() override;
 
   public:
-    explicit EngineThread(unsigned tickStep = 20);
+    explicit EngineThread(unsigned tickStep = 50);
 
     inline void stopEngine() { m_shouldRun = false; }
 
