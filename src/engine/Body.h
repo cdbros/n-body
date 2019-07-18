@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QOpenGLFunctions>
-#include <QThread>
 #include <vector>
 
 class Body {
@@ -37,48 +36,4 @@ class Body {
 
     std::vector<GLfloat>::iterator px;
     std::vector<GLfloat>::iterator py;
-};
-
-struct RendererInterface {
-    const GLfloat *objCoords;
-    const GLfloat *objRadii;
-    std::size_t numObjs;
-};
-
-class Engine {
-  public:
-    Engine();
-
-  public:
-    void addObject(const Body::Params &params);
-    void step(unsigned tickStep);
-    [[nodiscard]] RendererInterface getParams() const;
-
-  private:
-    std::vector<Body> m_objs;
-    std::vector<GLfloat> m_objCoords;
-    std::vector<GLfloat> m_objRadii;
-    GLfloat m_zIndex;
-};
-
-class EngineThread : public QThread {
-    Q_OBJECT
-
-  private:
-    void run() override;
-
-  public:
-    explicit EngineThread(unsigned tickStep = 70);
-
-    inline void stopEngine() { m_shouldRun = false; }
-
-  signals:
-    void updateParams(RendererInterface params);
-    void renderReady();
-
-  private:
-    Engine m_engine;
-    unsigned m_tickStep;
-    bool m_shouldRun;
-    bool m_rateLimit;
 };

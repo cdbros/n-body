@@ -1,11 +1,10 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#pragma once
 
-#include "../Engine.h"
 #include <QObject>
 #include <QOpenGLFunctions_4_1_Core>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
+#include <engine/Engine.h>
 #include <memory>
 
 class Renderer : public QObject, protected QOpenGLFunctions_4_1_Core {
@@ -39,5 +38,3 @@ class Renderer : public QObject, protected QOpenGLFunctions_4_1_Core {
     GLuint m_obo{};
     GLuint m_rbo{};
 };
-
-#endif // RENDERER_H

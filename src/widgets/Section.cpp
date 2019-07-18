@@ -18,9 +18,8 @@
     along with Elypson/qt-collapsible-section. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QPropertyAnimation>
-
 #include "Section.h"
+#include <QPropertyAnimation>
 
 Section::Section(const QString &title, const int animationDuration, QWidget *parent)
     : QWidget(parent), animationDuration(animationDuration) {

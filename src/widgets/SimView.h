@@ -1,12 +1,12 @@
 #ifndef SIMVIEW_H
 #define SIMVIEW_H
 
-#include "src/Engine.h"
-#include "src/rendering/Renderer.h"
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
+#include <engine/EngineThread.h>
 #include <memory>
+#include <rendering/Renderer.h>
 
 class SimView : public QOpenGLWidget {
     Q_OBJECT
