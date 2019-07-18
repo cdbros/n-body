@@ -3,8 +3,8 @@
 #define CONTROLPANELWIDGET_H
 
 #include <QWidget>
-#include <src/widgets/Section.h>
 #include <memory>
+#include <src/widgets/Section.h>
 
 class ControlPanelWidget : public QWidget {
     Q_OBJECT

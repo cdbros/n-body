@@ -74,10 +74,7 @@ void Renderer::initialize() {
     gl_check(m_program->link());
 
     GLfloat vertices[] = {
-        -1.0f, -1.0f,
-        -1.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f,
     };
     GLuint indices[] = {
         0, 1, 2, 2, 3, 0,
@@ -129,12 +126,11 @@ void Renderer::initialize() {
 void Renderer::updateParams(RendererInterface params) {
     m_engineParams = params;
     gl_check(glBindBuffer(GL_ARRAY_BUFFER, m_rbo));
-    gl_check(glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * m_engineParams.numObjs, m_engineParams.objRadii, GL_STATIC_DRAW));
+    gl_check(glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * m_engineParams.numObjs, m_engineParams.objRadii,
+                          GL_STATIC_DRAW));
 }
 
-void Renderer::renderReady() {
-    m_openGLView->update();
-}
+void Renderer::renderReady() { m_openGLView->update(); }
 
 void Renderer::render() {
     m_program->bind();
@@ -150,7 +146,8 @@ void Renderer::render() {
 
     // Coordinates updates on each render
     gl_check(glBindBuffer(GL_ARRAY_BUFFER, m_obo));
-    gl_check(glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat) * m_engineParams.numObjs, m_engineParams.objCoords, GL_DYNAMIC_DRAW));
+    gl_check(glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat) * m_engineParams.numObjs, m_engineParams.objCoords,
+                          GL_DYNAMIC_DRAW));
 
     gl_check(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
     gl_check(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eab));

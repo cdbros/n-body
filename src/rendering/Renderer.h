@@ -16,7 +16,7 @@ class Renderer : public QObject, protected QOpenGLFunctions_4_1_Core {
 
     void initialize();
     void render();
-    inline void resize(int width, int height) noexcept { }
+    inline void resize(int width, int height) noexcept {}
 
   public slots:
     void updateParams(RendererInterface params);
