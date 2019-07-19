@@ -21,7 +21,7 @@ void SimView::initializeGL() {
     qRegisterMetaType<RendererInterface>();
     connect(&m_engineThread, &EngineThread::updateParams, m_renderer.get(), &Renderer::updateParams);
     connect(&m_engineThread, &EngineThread::renderReady, m_renderer.get(), &Renderer::renderReady);
-    m_engineThread.start();
+    m_engineThread.start(QThread::TimeCriticalPriority);
 }
 
 void SimView::paintGL() { m_renderer->render(); }
