@@ -1,7 +1,7 @@
 #include "EngineThread.h"
 
-EngineThread::EngineThread(unsigned tickStep)
-    : m_engine{}, m_tickStep(tickStep), m_shouldRun(true), m_rateLimit(false) {}
+EngineThread::EngineThread()
+    : m_engine{}, m_tickStep(10), m_shouldRun(true), m_rateLimit(false) {}
 
 inline auto getTimeUsec() {
     using namespace std::chrono;
@@ -14,8 +14,7 @@ void EngineThread::run() {
     while (m_shouldRun) {
         lastRenderTime = getTimeUsec();
         m_engine.step(m_tickStep);
-        m_engine.takeMetrics();
-        emit renderReady();
+        //emit renderReady();
         auto delta = getTimeUsec() - lastRenderTime;
         if (m_rateLimit && delta < m_tickStep) {
             usleep(m_tickStep - delta);

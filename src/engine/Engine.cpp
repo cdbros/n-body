@@ -61,151 +61,98 @@ inline auto getTimeUsec() {
 #include <iostream>
 #include <cstdlib>
 
-void Engine::takeMetrics() {
-    static std::size_t magCount = 0;
-    static double start = getTimeUsec();
-    ++magCount;
+typedef decltype(getTimeUsec()) usec_t;
+static usec_t start, stop;
+static usec_t total = 0;
+static unsigned frameCount = 0;
 
-    if (m_lastTime == 0.0) {
-        m_lastTime = getTimeUsec();
-        m_frameCount = 0;
-    }
-    ++m_frameCount;
-    if (m_frameCount == 60000) {
-        long double framesPerSec = m_frameCount * 1e+6 / (getTimeUsec() - m_lastTime);
-        m_lastTime = getTimeUsec();
-        std::cout << "FPS: " << framesPerSec << std::endl;
-        m_frameCount = 0;
-    }
-    if (magCount == 60000*100) {
-        std::cout << "MAG_COUNT: " << std::endl;
-        auto &o = m_objs[3];
-        std::cout << (getTimeUsec() - start) / 1e+6 << std::endl;
-        std::cout << o.rx << std::endl;
-        std::cout << o.ry << std::endl;
-        std::cout << o.vx << std::endl;
-        std::cout << o.vy << std::endl;
+void Engine::metricsStart() {
+    start = getTimeUsec();
+}
+
+void Engine::metricsStop() {
+    stop = getTimeUsec();
+    total += stop - start;
+    ++frameCount;
+    if (frameCount == 10000000) {
+        std::cout << "Time: " << total / 1e+6 << " sec" << std::endl;
+        std::cout << "FPS:  " << frameCount / (total / 1e+6) << std::endl;
+        std::cout << "obj[3]:" << std::endl;
+        auto &obj = m_objs[3];
+        std::cout << "   rx: " << obj.rx << std::endl;
+        std::cout << "   ry: " << obj.ry << std::endl;
+        std::cout << "   vx: " << obj.vx << std::endl;
+        std::cout << "   vy: " << obj.vy << std::endl;
         exit(0);
     }
 }
 
 void Engine::step(unsigned tickStep) {
+    metricsStart();
+
     constexpr long double usec_to_sec = 1.0e+6;
     long double h = tickStep / usec_to_sec * Config::TIME_SCALE;
     long double halfh = 0.5 * h;
 
     long double hGMi = h * Config::G;
+
     for (auto i = 0; i < m_objs.size(); ++i) {
 
-        auto &obj = m_objs[i];
-        auto ri_x = obj.rx;
-        auto ri_y = obj.ry;
-        auto vi_x = obj.vx;
-        auto vi_y = obj.vy;
+        auto &o_i = m_objs[i];
 
-        // f(t, r, v) = v
-        // g(t, r, v) = G*Mi sum(j != i, Mj/|rj-r|^3 (rj-r)
-        // k0 = h * f(ti, ri, vi) = hv
-        long double k0_x = h * vi_x;
-        long double k0_y = h * vi_y;
+        long double acc_kx = 0;
+        long double acc_ky = 0;
+        long double acc_lx = 0;
+        long double acc_ly = 0;
 
-        // l0 = h * g(ti, ri, vi) = h*G*Mi*sum(j != i, Mj/|rj-ri|^3 (rj-ri)
-        long double l0_x = 0;
-        long double l0_y = 0;
-        for (auto j = 0; j < m_objs.size(); ++j) {
-            if (j == i) { continue; }
-            auto &other = m_objs[j];
-            long double delta_x = other.rx - ri_x;
-            long double delta_y = other.ry - ri_y;
-            long double distSq = delta_x * delta_x + delta_y * delta_y;
-            long double dist = sqrt(distSq);
-            long double distCub = dist * dist * dist;
-            long double massFrac = other.mass / distCub;
-            l0_x += massFrac * delta_x;
-            l0_y += massFrac * delta_y;
+        long double lx = 0;
+        long double ly = 0;
+        long double kx = 0;
+        long double ky = 0;
+
+        long double ri_x;
+        long double ri_y;
+
+        for (unsigned d = 0; d < 4; ++d) {
+            // [0, 1, 2, 3] -> [1, 2, 2, 1]
+            unsigned p = ((d + 1) >> 1) % 2 + 1;
+
+            // ki
+            ri_x = o_i.rx + kx / p;
+            ri_y = o_i.ry + ky / p;
+            kx = h * o_i.vx + halfh * lx;
+            ky = h * o_i.vy + halfh * ly;
+            acc_kx += p * kx;
+            acc_ky += p * ky;
+            //<
+
+            // li
+            lx = 0;
+            ly = 0;
+            for (auto j = 0; j < m_objs.size(); ++j) {
+                if (j == i) { continue; }
+                auto &o_j = m_objs[j];
+                long double dx = o_j.rx - ri_x;
+                long double dy = o_j.ry - ri_y;
+                long double distSq = dx * dx + dy * dy;
+                long double massFrac = o_j.mass / distSq / sqrt(distSq);
+                lx += massFrac * dx;
+                ly += massFrac * dy;
+            }
+            lx *= hGMi;
+            ly *= hGMi;
+            acc_lx += p * lx;
+            acc_ly += p * ly;
+            //<
         }
-        l0_x *= hGMi;
-        l0_y *= hGMi;
 
+        o_i.rx += acc_kx / 6;
+        o_i.ry += acc_ky / 6;
+        o_i.vx += acc_lx / 6;
+        o_i.vy += acc_ly / 6;
 
-        // k1 = h * f(ti + h/2, ri + k0/2, vi + l0/2) = h(vi + l0/2)
-        long double k1_x = k0_x + halfh * l0_x;
-        long double k1_y = k0_y + halfh * l0_y;
-
-        // l1 = h * g(..., ri + k0/2, ...)
-        long double l1_x = 0;
-        long double l1_y = 0;
-        long double half_k0_x = 0.5 * k0_x;
-        long double half_k0_y = 0.5 * k0_y;
-        for (auto j = 0; j < m_objs.size(); ++j) {
-            if (j == i) { continue; }
-            auto &other = m_objs[j];
-            long double delta_x = other.rx - ri_x - half_k0_x;
-            long double delta_y = other.ry - ri_y - half_k0_y;
-            long double distSq = delta_x * delta_x + delta_y * delta_y;
-            long double dist = sqrt(distSq);
-            long double distCub = dist * dist * dist;
-            long double massFrac = other.mass / distCub;
-            l1_x += massFrac * delta_x;
-            l1_y += massFrac * delta_y;
-        }
-        l1_x *= hGMi;
-        l1_y *= hGMi;
-
-        // k2 = h(vi + l1/2)
-        long double k2_x = k0_x + halfh * l1_x;
-        long double k2_y = k0_y + halfh * l1_y;
-
-
-        // l2 = h * g(..., ri + k1/2, ...)
-        long double l2_x = 0;
-        long double l2_y = 0;
-        long double half_k1_x = 0.5 * k2_x;
-        long double half_k1_y = 0.5 * k2_y;
-        for (auto j = 0; j < m_objs.size(); ++j) {
-            if (j == i) { continue; }
-            auto &other = m_objs[j];
-            long double delta_x = other.rx - ri_x - half_k1_x;
-            long double delta_y = other.ry - ri_y - half_k1_y;
-            long double distSq = delta_x * delta_x + delta_y * delta_y;
-            long double dist = sqrt(distSq);
-            long double distCub = dist * dist * dist;
-            long double massFrac = other.mass / distCub;
-            l2_x += massFrac * delta_x;
-            l2_y += massFrac * delta_y;
-        }
-        l2_x *= hGMi;
-        l2_y *= hGMi;
-
-        // k3 = h(vi + l2)
-        long double k3_x = k0_x + h * l2_x;
-        long double k3_y = k0_y + h * l2_y;
-
-        // l3 = h * g(..., ri + k2, ...)
-        long double l3_x = 0;
-        long double l3_y = 0;
-        for (auto j = 0; j < m_objs.size(); ++j) {
-            if (j == i) { continue; }
-            auto &other = m_objs[j];
-            long double delta_x = other.rx - ri_x - k2_x;
-            long double delta_y = other.ry - ri_y - k2_y;
-            long double distSq = delta_x * delta_x + delta_y * delta_y;
-            long double dist = sqrt(distSq);
-            long double distCub = dist * dist * dist;
-            long double massFrac = other.mass / distCub;
-            l3_x += massFrac * delta_x;
-            l3_y += massFrac * delta_y;
-        }
-        l3_x *= hGMi;
-        l3_y *= hGMi;
-
-        obj.rx += (k0_x + 2 * k1_x + 2 * k2_x + k3_x) / 6;
-        obj.ry += (k0_y + 2 * k1_y + 2 * k2_y + k3_y) / 6;
-        obj.vx += (l0_x + 2 * l1_x + 2 * l2_x + l3_x) / 6;
-        obj.vy += (l0_y + 2 * l1_y + 2 * l2_y + l3_y) / 6;
-
-        *obj.px = Config::DISTANCE_SCALE * static_cast<GLfloat>(obj.rx);
-        *obj.py = Config::DISTANCE_SCALE * static_cast<GLfloat>(obj.ry);
+        *o_i.px = Config::DISTANCE_SCALE * static_cast<GLfloat>(o_i.rx);
+        *o_i.py = Config::DISTANCE_SCALE * static_cast<GLfloat>(o_i.ry);
     }
 
     /*typedef long double ldbl;
@@ -277,6 +224,8 @@ void Engine::step(unsigned tickStep) {
     for (auto &obj : m_objs) {
         obj.step(h);
     }*/
+
+    metricsStop();
 }
 
 RendererInterface Engine::getParams() const {
