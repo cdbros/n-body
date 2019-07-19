@@ -10,15 +10,14 @@ class Engine {
   public:
     void addObject(const Body::Params &params);
     void step(unsigned tickStep);
-    void takeMetrics();
     [[nodiscard]] RendererInterface getParams() const;
 
   private:
+    void metricsStart();
+    void metricsStop();
+
     std::vector<Body> m_objs;
     std::vector<GLfloat> m_objCoords;
     std::vector<GLfloat> m_objRadii;
     GLfloat m_zIndex;
-
-    long double m_lastTime{};
-    std::size_t m_frameCount{};
 };

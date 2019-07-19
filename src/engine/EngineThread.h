@@ -10,7 +10,7 @@ class EngineThread : public QThread {
     void run() override;
 
   public:
-    explicit EngineThread(unsigned tickStep = 1);
+    explicit EngineThread();
 
     inline void stopEngine() { m_shouldRun = false; }
 
