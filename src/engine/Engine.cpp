@@ -113,38 +113,118 @@ void Engine::step(unsigned tickStep) {
         long double ri_x;
         long double ri_y;
 
-        for (unsigned d = 0; d < 4; ++d) {
-            // [0, 1, 2, 3] -> [1, 2, 2, 1]
-            unsigned p = ((d + 1) >> 1) % 2 + 1;
+        unsigned p = 1;
+        // ki
+        ri_x = o_i.rx + kx / p;
+        ri_y = o_i.ry + ky / p;
+        kx = h * o_i.vx + halfh * lx;
+        ky = h * o_i.vy + halfh * ly;
+        acc_kx += p * kx;
+        acc_ky += p * ky;
+        //<
 
-            // ki
-            ri_x = o_i.rx + kx / p;
-            ri_y = o_i.ry + ky / p;
-            kx = h * o_i.vx + halfh * lx;
-            ky = h * o_i.vy + halfh * ly;
-            acc_kx += p * kx;
-            acc_ky += p * ky;
-            //<
-
-            // li
-            lx = 0;
-            ly = 0;
-            for (auto j = 0; j < m_objs.size(); ++j) {
-                if (j == i) { continue; }
-                auto &o_j = m_objs[j];
-                long double dx = o_j.rx - ri_x;
-                long double dy = o_j.ry - ri_y;
-                long double distSq = dx * dx + dy * dy;
-                long double massFrac = o_j.mass / distSq / sqrt(distSq);
-                lx += massFrac * dx;
-                ly += massFrac * dy;
-            }
-            lx *= hGMi;
-            ly *= hGMi;
-            acc_lx += p * lx;
-            acc_ly += p * ly;
-            //<
+        // li
+        lx = 0;
+        ly = 0;
+        for (auto j = 0; j < m_objs.size(); ++j) {
+            if (j == i) { continue; }
+            auto &o_j = m_objs[j];
+            long double dx = o_j.rx - ri_x;
+            long double dy = o_j.ry - ri_y;
+            long double distSq = dx * dx + dy * dy;
+            long double massFrac = o_j.mass / distSq / sqrt(distSq);
+            lx += massFrac * dx;
+            ly += massFrac * dy;
         }
+        lx *= hGMi;
+        ly *= hGMi;
+        acc_lx += p * lx;
+        acc_ly += p * ly;
+        //<
+        p = 2;
+        // ki
+        ri_x = o_i.rx + kx / p;
+        ri_y = o_i.ry + ky / p;
+        kx = h * o_i.vx + halfh * lx;
+        ky = h * o_i.vy + halfh * ly;
+        acc_kx += p * kx;
+        acc_ky += p * ky;
+        //<
+
+        // li
+        lx = 0;
+        ly = 0;
+        for (auto j = 0; j < m_objs.size(); ++j) {
+            if (j == i) { continue; }
+            auto &o_j = m_objs[j];
+            long double dx = o_j.rx - ri_x;
+            long double dy = o_j.ry - ri_y;
+            long double distSq = dx * dx + dy * dy;
+            long double massFrac = o_j.mass / distSq / sqrt(distSq);
+            lx += massFrac * dx;
+            ly += massFrac * dy;
+        }
+        lx *= hGMi;
+        ly *= hGMi;
+        acc_lx += p * lx;
+        acc_ly += p * ly;
+        //<
+        p = 2;
+        // ki
+        ri_x = o_i.rx + kx / p;
+        ri_y = o_i.ry + ky / p;
+        kx = h * o_i.vx + halfh * lx;
+        ky = h * o_i.vy + halfh * ly;
+        acc_kx += p * kx;
+        acc_ky += p * ky;
+        //<
+
+        // li
+        lx = 0;
+        ly = 0;
+        for (auto j = 0; j < m_objs.size(); ++j) {
+            if (j == i) { continue; }
+            auto &o_j = m_objs[j];
+            long double dx = o_j.rx - ri_x;
+            long double dy = o_j.ry - ri_y;
+            long double distSq = dx * dx + dy * dy;
+            long double massFrac = o_j.mass / distSq / sqrt(distSq);
+            lx += massFrac * dx;
+            ly += massFrac * dy;
+        }
+        lx *= hGMi;
+        ly *= hGMi;
+        acc_lx += p * lx;
+        acc_ly += p * ly;
+        //<
+        p = 1;
+        // ki
+        ri_x = o_i.rx + kx / p;
+        ri_y = o_i.ry + ky / p;
+        kx = h * o_i.vx + halfh * lx;
+        ky = h * o_i.vy + halfh * ly;
+        acc_kx += p * kx;
+        acc_ky += p * ky;
+        //<
+
+        // li
+        lx = 0;
+        ly = 0;
+        for (auto j = 0; j < m_objs.size(); ++j) {
+            if (j == i) { continue; }
+            auto &o_j = m_objs[j];
+            long double dx = o_j.rx - ri_x;
+            long double dy = o_j.ry - ri_y;
+            long double distSq = dx * dx + dy * dy;
+            long double massFrac = o_j.mass / distSq / sqrt(distSq);
+            lx += massFrac * dx;
+            ly += massFrac * dy;
+        }
+        lx *= hGMi;
+        ly *= hGMi;
+        acc_lx += p * lx;
+        acc_ly += p * ly;
+        //<
 
         o_i.rx += acc_kx / 6;
         o_i.ry += acc_ky / 6;
