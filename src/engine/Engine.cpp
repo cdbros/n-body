@@ -100,8 +100,8 @@ void Engine::step(unsigned tickStep) {
 
         auto &o_i = m_objs[i];
 
-        long double acc_kx = 0;
-        long double acc_ky = 0;
+        long double hvx = o_i.vx * h;
+        long double hvy = o_i.vy * h;
         long double acc_lx = 0;
         long double acc_ly = 0;
 
@@ -110,20 +110,42 @@ void Engine::step(unsigned tickStep) {
         long double kx = 0;
         long double ky = 0;
 
-        long double ri_x;
-        long double ri_y;
-
-        unsigned p = 1;
-        // ki
-        ri_x = o_i.rx + kx / p;
-        ri_y = o_i.ry + ky / p;
-        kx = h * o_i.vx + halfh * lx;
-        ky = h * o_i.vy + halfh * ly;
-        acc_kx += p * kx;
-        acc_ky += p * ky;
+        // k0
+        long double ri_x = o_i.rx;
+        long double ri_y = o_i.ry;
+        kx = hvx;
+        ky = hvy;
+        long double acc_kx = kx;
+        long double acc_ky = ky;
         //<
 
-        // li
+        // l0
+        for (auto j = 0; j < m_objs.size(); ++j) {
+            if (j == i) { continue; }
+            auto &o_j = m_objs[j];
+            long double dx = o_j.rx - ri_x;
+            long double dy = o_j.ry - ri_y;
+            long double distSq = dx * dx + dy * dy;
+            long double massFrac = o_j.mass / distSq / sqrt(distSq);
+            lx += massFrac * dx;
+            ly += massFrac * dy;
+        }
+        lx *= hGMi;
+        ly *= hGMi;
+        acc_lx += lx;
+        acc_ly += ly;
+        //<
+
+        // k1
+        ri_x += kx * 0.5;
+        ri_y += ky * 0.5;
+        kx = hvx + halfh * lx;
+        ky = hvy + halfh * ly;
+        acc_kx += 2 * kx;
+        acc_ky += 2 * ky;
+        //<
+
+        // l1
         lx = 0;
         ly = 0;
         for (auto j = 0; j < m_objs.size(); ++j) {
@@ -138,20 +160,20 @@ void Engine::step(unsigned tickStep) {
         }
         lx *= hGMi;
         ly *= hGMi;
-        acc_lx += p * lx;
-        acc_ly += p * ly;
-        //<
-        p = 2;
-        // ki
-        ri_x = o_i.rx + kx / p;
-        ri_y = o_i.ry + ky / p;
-        kx = h * o_i.vx + halfh * lx;
-        ky = h * o_i.vy + halfh * ly;
-        acc_kx += p * kx;
-        acc_ky += p * ky;
+        acc_lx += 2 * lx;
+        acc_ly += 2 * ly;
         //<
 
-        // li
+        // k2
+        ri_x = o_i.rx + kx * 0.5;
+        ri_y = o_i.ry + ky * 0.5;
+        kx = hvx + halfh * lx;
+        ky = hvy + halfh * ly;
+        acc_kx += 2 * kx;
+        acc_ky += 2 * ky;
+        //<
+
+        // l2
         lx = 0;
         ly = 0;
         for (auto j = 0; j < m_objs.size(); ++j) {
@@ -166,20 +188,20 @@ void Engine::step(unsigned tickStep) {
         }
         lx *= hGMi;
         ly *= hGMi;
-        acc_lx += p * lx;
-        acc_ly += p * ly;
-        //<
-        p = 2;
-        // ki
-        ri_x = o_i.rx + kx / p;
-        ri_y = o_i.ry + ky / p;
-        kx = h * o_i.vx + halfh * lx;
-        ky = h * o_i.vy + halfh * ly;
-        acc_kx += p * kx;
-        acc_ky += p * ky;
+        acc_lx += 2 * lx;
+        acc_ly += 2 * ly;
         //<
 
-        // li
+        // k3
+        ri_x = o_i.rx + kx;
+        ri_y = o_i.ry + ky;
+        kx = hvx + halfh * lx;
+        ky = hvy + halfh * ly;
+        acc_kx += kx;
+        acc_ky += ky;
+        //<
+
+        // l3
         lx = 0;
         ly = 0;
         for (auto j = 0; j < m_objs.size(); ++j) {
@@ -194,36 +216,8 @@ void Engine::step(unsigned tickStep) {
         }
         lx *= hGMi;
         ly *= hGMi;
-        acc_lx += p * lx;
-        acc_ly += p * ly;
-        //<
-        p = 1;
-        // ki
-        ri_x = o_i.rx + kx / p;
-        ri_y = o_i.ry + ky / p;
-        kx = h * o_i.vx + halfh * lx;
-        ky = h * o_i.vy + halfh * ly;
-        acc_kx += p * kx;
-        acc_ky += p * ky;
-        //<
-
-        // li
-        lx = 0;
-        ly = 0;
-        for (auto j = 0; j < m_objs.size(); ++j) {
-            if (j == i) { continue; }
-            auto &o_j = m_objs[j];
-            long double dx = o_j.rx - ri_x;
-            long double dy = o_j.ry - ri_y;
-            long double distSq = dx * dx + dy * dy;
-            long double massFrac = o_j.mass / distSq / sqrt(distSq);
-            lx += massFrac * dx;
-            ly += massFrac * dy;
-        }
-        lx *= hGMi;
-        ly *= hGMi;
-        acc_lx += p * lx;
-        acc_ly += p * ly;
+        acc_lx += lx;
+        acc_ly += ly;
         //<
 
         o_i.rx += acc_kx / 6;
@@ -231,8 +225,8 @@ void Engine::step(unsigned tickStep) {
         o_i.vx += acc_lx / 6;
         o_i.vy += acc_ly / 6;
 
-        *o_i.px = Config::DISTANCE_SCALE * static_cast<GLfloat>(o_i.rx);
-        *o_i.py = Config::DISTANCE_SCALE * static_cast<GLfloat>(o_i.ry);
+        *o_i.px = Config::DISTANCE_SCALE * o_i.rx;
+        *o_i.py = Config::DISTANCE_SCALE * o_i.ry;
     }
 
     /*typedef long double ldbl;
