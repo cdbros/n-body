@@ -1,5 +1,4 @@
 #include "Engine.h"
-#include "Config.h"
 #include <cmath>
 #include <algorithm>
 #include <functional>
@@ -90,43 +89,43 @@ void Engine::metricsStop() {
 void Engine::step(unsigned tickStep) {
     metricsStart();
 
-    constexpr long double usec_to_sec = 1.0e+6;
-    long double h = tickStep / usec_to_sec * Config::TIME_SCALE;
-    long double halfh = 0.5 * h;
+    constexpr engine_fp_t usec_to_sec = 1.0e+6;
+    engine_fp_t h = tickStep / usec_to_sec * Config::TIME_SCALE;
+    engine_fp_t halfh = 0.5 * h;
 
-    long double hGMi = h * Config::G;
+    engine_fp_t hGMi = h * Config::G;
 
     for (auto i = 0; i < m_objs.size(); ++i) {
 
         auto &o_i = m_objs[i];
 
-        long double hvx = o_i.vx * h;
-        long double hvy = o_i.vy * h;
-        long double acc_lx = 0;
-        long double acc_ly = 0;
+        engine_fp_t hvx = o_i.vx * h;
+        engine_fp_t hvy = o_i.vy * h;
+        engine_fp_t acc_lx = 0;
+        engine_fp_t acc_ly = 0;
 
-        long double lx = 0;
-        long double ly = 0;
-        long double kx = 0;
-        long double ky = 0;
+        engine_fp_t lx = 0;
+        engine_fp_t ly = 0;
+        engine_fp_t kx = 0;
+        engine_fp_t ky = 0;
 
         // k0
-        long double ri_x = o_i.rx;
-        long double ri_y = o_i.ry;
+        engine_fp_t ri_x = o_i.rx;
+        engine_fp_t ri_y = o_i.ry;
         kx = hvx;
         ky = hvy;
-        long double acc_kx = kx;
-        long double acc_ky = ky;
+        engine_fp_t acc_kx = kx;
+        engine_fp_t acc_ky = ky;
         //<
 
         // l0
         for (auto j = 0; j < m_objs.size(); ++j) {
             if (j == i) { continue; }
             auto &o_j = m_objs[j];
-            long double dx = o_j.rx - ri_x;
-            long double dy = o_j.ry - ri_y;
-            long double distSq = dx * dx + dy * dy;
-            long double massFrac = o_j.mass / distSq / sqrt(distSq);
+            engine_fp_t dx = o_j.rx - ri_x;
+            engine_fp_t dy = o_j.ry - ri_y;
+            engine_fp_t distSq = dx * dx + dy * dy;
+            engine_fp_t massFrac = o_j.mass / distSq / sqrt(distSq);
             lx += massFrac * dx;
             ly += massFrac * dy;
         }
@@ -151,10 +150,10 @@ void Engine::step(unsigned tickStep) {
         for (auto j = 0; j < m_objs.size(); ++j) {
             if (j == i) { continue; }
             auto &o_j = m_objs[j];
-            long double dx = o_j.rx - ri_x;
-            long double dy = o_j.ry - ri_y;
-            long double distSq = dx * dx + dy * dy;
-            long double massFrac = o_j.mass / distSq / sqrt(distSq);
+            engine_fp_t dx = o_j.rx - ri_x;
+            engine_fp_t dy = o_j.ry - ri_y;
+            engine_fp_t distSq = dx * dx + dy * dy;
+            engine_fp_t massFrac = o_j.mass / distSq / sqrt(distSq);
             lx += massFrac * dx;
             ly += massFrac * dy;
         }
@@ -179,10 +178,10 @@ void Engine::step(unsigned tickStep) {
         for (auto j = 0; j < m_objs.size(); ++j) {
             if (j == i) { continue; }
             auto &o_j = m_objs[j];
-            long double dx = o_j.rx - ri_x;
-            long double dy = o_j.ry - ri_y;
-            long double distSq = dx * dx + dy * dy;
-            long double massFrac = o_j.mass / distSq / sqrt(distSq);
+            engine_fp_t dx = o_j.rx - ri_x;
+            engine_fp_t dy = o_j.ry - ri_y;
+            engine_fp_t distSq = dx * dx + dy * dy;
+            engine_fp_t massFrac = o_j.mass / distSq / sqrt(distSq);
             lx += massFrac * dx;
             ly += massFrac * dy;
         }
@@ -207,10 +206,10 @@ void Engine::step(unsigned tickStep) {
         for (auto j = 0; j < m_objs.size(); ++j) {
             if (j == i) { continue; }
             auto &o_j = m_objs[j];
-            long double dx = o_j.rx - ri_x;
-            long double dy = o_j.ry - ri_y;
-            long double distSq = dx * dx + dy * dy;
-            long double massFrac = o_j.mass / distSq / sqrt(distSq);
+            engine_fp_t dx = o_j.rx - ri_x;
+            engine_fp_t dy = o_j.ry - ri_y;
+            engine_fp_t distSq = dx * dx + dy * dy;
+            engine_fp_t massFrac = o_j.mass / distSq / sqrt(distSq);
             lx += massFrac * dx;
             ly += massFrac * dy;
         }
@@ -229,7 +228,7 @@ void Engine::step(unsigned tickStep) {
         *o_i.py = Config::DISTANCE_SCALE * o_i.ry;
     }
 
-    /*typedef long double ldbl;
+    /*typedef engine_fp_t ldbl;
     auto endIt = std::end(m_objs);
     for (auto &o : m_objs) {
         o.fx = 0;

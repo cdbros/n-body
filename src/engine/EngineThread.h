@@ -21,6 +21,7 @@ class EngineThread : public QThread {
   private:
     Engine m_engine;
     unsigned m_tickStep;
+    unsigned m_fpsLimit;
     bool m_shouldRun;
     bool m_rateLimit;
 };

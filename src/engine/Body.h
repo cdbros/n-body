@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Config.h"
 #include <QOpenGLFunctions>
 #include <vector>
 
@@ -8,31 +9,31 @@ class Body {
 
   public:
     struct Params {
-        inline explicit Params(long double x0 = 0, long double y0 = 0, long double vx0 = 0, long double vy0 = 0,
-                               long double mass = 0, long double radius = 0)
+        inline explicit Params(engine_fp_t x0 = 0, engine_fp_t y0 = 0, engine_fp_t vx0 = 0, engine_fp_t vy0 = 0,
+                               engine_fp_t mass = 0, engine_fp_t radius = 0)
             : x0{x0}, y0{y0}, vx0{vx0}, vy0{vy0}, mass{mass}, radius{radius} {}
 
-        long double x0, y0;
-        long double vx0, vy0;
-        long double mass;
-        long double radius;
+        engine_fp_t x0, y0;
+        engine_fp_t vx0, vy0;
+        engine_fp_t mass;
+        engine_fp_t radius;
     };
 
   private:
     explicit Body(const Params &params);
 
   private:
-    void step(long double dt);
+    void step(engine_fp_t dt);
     void resetForce();
     void addGravity(Body &b);
 
   private:
-    long double rx, ry;
-    long double vx, vy;
-    long double ax, ay;
-    long double fx, fy;
-    long double mass;
-    long double radius;
+    engine_fp_t rx, ry;
+    engine_fp_t vx, vy;
+    engine_fp_t ax, ay;
+    engine_fp_t fx, fy;
+    engine_fp_t mass;
+    engine_fp_t radius;
 
     std::vector<GLfloat>::iterator px;
     std::vector<GLfloat>::iterator py;
