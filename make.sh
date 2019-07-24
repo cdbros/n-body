@@ -6,5 +6,5 @@
 
 # Make folder if it doesn't exist before.
 mkdir -p bin;
-cd bin && rm -rf;
+cd bin && rm -rf *;
 cmake ../ && make -j4 && ./n-body;
