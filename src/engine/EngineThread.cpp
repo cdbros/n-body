@@ -14,7 +14,7 @@ void EngineThread::run() {
     while (m_shouldRun) {
         lastRenderTime = getTimeUsec();
         m_engine.step(m_tickStep);
-        //emit renderReady();
+        emit renderReady();
         auto delta = getTimeUsec() - lastRenderTime;
         if (m_rateLimit && delta < m_tickStep) {
             usleep(m_tickStep - delta);
