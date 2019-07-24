@@ -286,17 +286,11 @@ void Engine::step(unsigned tickStep) {
         *m_objs[i].py = Config::DISTANCE_SCALE * m_objs[i].ry;
     }*/
 
-    /*for (auto &obj : m_objs) {
-        obj.resetForce();
-    }
-    for (auto flIt = std::begin(m_objs); flIt != std::end(m_objs); ++flIt) {
-        for (auto slIt = std::next(flIt); slIt != std::end(m_objs); ++slIt) {
-            flIt->addGravity(*slIt);
-        }
-    }
-    for (auto &obj : m_objs) {
-        obj.step(h);
-    }*/
+    //for_each(m_objs.begin(), m_objs.end(), std::mem_fn(&Body::resetForce));
+    //for (auto flIt = std::begin(m_objs); flIt != std::end(m_objs); ++flIt) {
+    //    for_each(std::next(flIt), m_objs.end(), [&](Body &b) {flIt->addGravity(b);});
+    //}
+    //for_each(m_objs.begin(), m_objs.end(), [&](Body &b) {b.step(dt);});
 
     metricsStop();
 }
