@@ -14,32 +14,32 @@ ControlPanelWidget::ControlPanelWidget(QWidget *parent) : QWidget{parent} {
 
     this->setObjectName(QString::fromUtf8("controlPanel"));
 
-    m_vLayout = std::make_unique<QVBoxLayout>(this);
-    m_vLayout->setObjectName(QString::fromUtf8("controlPanelVLayout"));
-    m_vLayout->setAlignment(Qt::AlignTop);
+    auto vLayout = new QVBoxLayout(this);
+    vLayout->setObjectName(QString::fromUtf8("controlPanelVLayout"));
+    vLayout->setAlignment(Qt::AlignTop);
 
-    m_section1 = std::make_unique<Section>("Section 1", 50, this);
-    m_section1Layout = std::make_unique<QVBoxLayout>();
-    m_section1Layout->addWidget(new QPushButton("This is section 1 button", m_section1.get()));
-    m_section1->setContentLayout(*m_section1Layout);
+    auto section1 = new Section("Section 1", 50, this);
+    auto section1Layout = new QVBoxLayout();
+    section1Layout->addWidget(new QPushButton("This is section 1 button", section1));
+    section1->setContentLayout(*section1Layout);
 
-    m_section2 = std::make_unique<Section>("Section 2", 50, this);
-    m_section2Layout = std::make_unique<QVBoxLayout>();
-    m_section2Layout->addWidget(new QPushButton("This is section 2 button", m_section2.get()));
-    m_section2->setContentLayout(*m_section2Layout);
+    auto section2 = new Section("Section 2", 50, this);
+    auto section2Layout = new QVBoxLayout();
+    section2Layout->addWidget(new QPushButton("This is section 2 button", section2));
+    section2->setContentLayout(*section2Layout);
 
-    m_section3 = std::make_unique<Section>("Section 3", 50, this);
-    m_section3Layout = std::make_unique<QVBoxLayout>();
-    m_section3Layout->addWidget(new QPushButton("This is section 3 button", m_section3.get()));
-    m_section3->setContentLayout(*m_section3Layout);
+    auto section3 = new Section("Section 3", 50, this);
+    auto section3Layout = new QVBoxLayout();
+    section3Layout->addWidget(new QPushButton("This is section 3 button", section3));
+    section3->setContentLayout(*section3Layout);
 
-    m_section4 = std::make_unique<Section>("Section 4", 50, this);
-    m_section4Layout = std::make_unique<QVBoxLayout>();
-    m_section4Layout->addWidget(new QPushButton("This is section 4 button", m_section4.get()));
-    m_section4->setContentLayout(*m_section4Layout);
+    auto section4 = new Section("Section 4", 50, this);
+    auto section4Layout = new QVBoxLayout();
+    section4Layout->addWidget(new QPushButton("This is section 4 button", section4));
+    section4->setContentLayout(*section4Layout);
 
-    m_vLayout->addWidget(m_section1.get());
-    m_vLayout->addWidget(m_section2.get());
-    m_vLayout->addWidget(m_section3.get());
-    m_vLayout->addWidget(m_section4.get());
+    vLayout->addWidget(section1);
+    vLayout->addWidget(section2);
+    vLayout->addWidget(section3);
+    vLayout->addWidget(section4);
 }
