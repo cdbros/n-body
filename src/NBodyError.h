@@ -8,10 +8,8 @@
 
 class NBodyError : public std::runtime_error {
 
-    public:
-
-        NBodyError(const std::string &message) throw()
-            : std::runtime_error(message.c_str()) {}
+  public:
+    NBodyError(const std::string &message) throw() : std::runtime_error(message.c_str()) {}
 };
 
 #endif /* NBODYERROR_H */

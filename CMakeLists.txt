@@ -12,6 +12,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 find_package(OpenGL REQUIRED)
 
+# qt-section-widget
+SET(QT_SECTION_WIDGET qt-section-widget)
+add_subdirectory(${QT_SECTION_WIDGET})
+
 # source files
 file(GLOB_RECURSE HDRS "src/*.hh" "src/*.h")
 file(GLOB_RECURSE SRCS "src/*.cpp" "src/*.c")
@@ -32,3 +36,6 @@ endif (WIN32)
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Widgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${QT_SECTION_WIDGET})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${QT_SECTION_WIDGET})
