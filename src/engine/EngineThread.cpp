@@ -1,7 +1,6 @@
 #include "EngineThread.h"
 
-EngineThread::EngineThread()
-    : m_engine{}, m_tickStep(10), m_shouldRun(true), m_rateLimit(false) {}
+EngineThread::EngineThread() : m_engine{}, m_tickStep(10), m_shouldRun(true), m_rateLimit(false) {}
 
 inline auto getTimeUsec() {
     using namespace std::chrono;

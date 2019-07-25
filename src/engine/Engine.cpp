@@ -1,6 +1,6 @@
 #include "Engine.h"
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 #include <functional>
 
 Engine::Engine() : m_objs{}, m_objCoords{}, m_objRadii{}, m_zIndex(0.0f) {
@@ -56,18 +56,15 @@ inline auto getTimeUsec() {
     return duration_cast<microseconds>(system_clock::now().time_since_epoch()).count();
 }
 
-
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 
 typedef decltype(getTimeUsec()) usec_t;
 static usec_t start, stop;
 static usec_t total = 0;
 static unsigned frameCount = 0;
 
-void Engine::metricsStart() {
-    start = getTimeUsec();
-}
+void Engine::metricsStart() { start = getTimeUsec(); }
 
 void Engine::metricsStop() {
     stop = getTimeUsec();
@@ -120,7 +117,9 @@ void Engine::step(unsigned tickStep) {
 
         // l0
         for (auto j = 0; j < m_objs.size(); ++j) {
-            if (j == i) { continue; }
+            if (j == i) {
+                continue;
+            }
             auto &o_j = m_objs[j];
             engine_fp_t dx = o_j.rx - ri_x;
             engine_fp_t dy = o_j.ry - ri_y;
@@ -148,7 +147,9 @@ void Engine::step(unsigned tickStep) {
         lx = 0;
         ly = 0;
         for (auto j = 0; j < m_objs.size(); ++j) {
-            if (j == i) { continue; }
+            if (j == i) {
+                continue;
+            }
             auto &o_j = m_objs[j];
             engine_fp_t dx = o_j.rx - ri_x;
             engine_fp_t dy = o_j.ry - ri_y;
@@ -176,7 +177,9 @@ void Engine::step(unsigned tickStep) {
         lx = 0;
         ly = 0;
         for (auto j = 0; j < m_objs.size(); ++j) {
-            if (j == i) { continue; }
+            if (j == i) {
+                continue;
+            }
             auto &o_j = m_objs[j];
             engine_fp_t dx = o_j.rx - ri_x;
             engine_fp_t dy = o_j.ry - ri_y;
@@ -204,7 +207,9 @@ void Engine::step(unsigned tickStep) {
         lx = 0;
         ly = 0;
         for (auto j = 0; j < m_objs.size(); ++j) {
-            if (j == i) { continue; }
+            if (j == i) {
+                continue;
+            }
             auto &o_j = m_objs[j];
             engine_fp_t dx = o_j.rx - ri_x;
             engine_fp_t dy = o_j.ry - ri_y;
@@ -286,11 +291,11 @@ void Engine::step(unsigned tickStep) {
         *m_objs[i].py = Config::DISTANCE_SCALE * m_objs[i].ry;
     }*/
 
-    //for_each(m_objs.begin(), m_objs.end(), std::mem_fn(&Body::resetForce));
-    //for (auto flIt = std::begin(m_objs); flIt != std::end(m_objs); ++flIt) {
+    // for_each(m_objs.begin(), m_objs.end(), std::mem_fn(&Body::resetForce));
+    // for (auto flIt = std::begin(m_objs); flIt != std::end(m_objs); ++flIt) {
     //    for_each(std::next(flIt), m_objs.end(), [&](Body &b) {flIt->addGravity(b);});
     //}
-    //for_each(m_objs.begin(), m_objs.end(), [&](Body &b) {b.step(dt);});
+    // for_each(m_objs.begin(), m_objs.end(), [&](Body &b) {b.step(dt);});
 
     metricsStop();
 }

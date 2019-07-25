@@ -11,12 +11,12 @@
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
-    public:
-        explicit MainWindow(QWidget *parent = nullptr);
+  public:
+    explicit MainWindow(QWidget *parent = nullptr);
 
-    private:
-        std::unique_ptr<QWidget> m_centralWidget;
-        std::unique_ptr<QShortcut> m_closeShortcut;
+  private:
+    std::unique_ptr<QWidget> m_centralWidget;
+    std::unique_ptr<QShortcut> m_closeShortcut;
 };
 
 #endif // MAINWINDOW_H

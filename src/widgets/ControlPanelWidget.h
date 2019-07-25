@@ -2,8 +2,8 @@
 #ifndef CONTROLPANELWIDGET_H
 #define CONTROLPANELWIDGET_H
 
-#include <Section.h>
 #include <QWidget>
+#include <Section.h>
 #include <memory>
 
 class ControlPanelWidget : public QWidget {
