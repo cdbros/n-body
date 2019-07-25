@@ -1,5 +1,4 @@
 #include "ControlPanelWidget.h"
-#include "Section.h"
 #include <QLabel>
 #include <QPushButton>
 

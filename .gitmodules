@@ -1,0 +1,3 @@
+[submodule "qt-section-widget"]
+	path = qt-section-widget
+	url = https://github.com/dhillondeep/qt-section-widget
