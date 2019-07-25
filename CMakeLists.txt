@@ -39,3 +39,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${QT_SECTION_WIDGET})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${QT_SECTION_WIDGET})
+
+target_compile_options(${PROJECT_NAME} PRIVATE -fstandalone-debug)
