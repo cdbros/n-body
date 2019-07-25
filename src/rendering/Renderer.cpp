@@ -51,15 +51,16 @@ void Renderer::initialize() {
     glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eab));
     glCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
 
-    int mvp_loc = glCheck(m_program->uniformLocation("mvp"));
-    QMatrix4x4 mvp;
-    mvp.setToIdentity();
-    mvp.scale(m_zoom);
-    mvp.translate(m_camX, m_camY);
-    glCheck(m_program->bind());
-    glCheck(m_program->setUniformValue(mvp_loc, mvp));
+    m_mvp_loc = glCheck(m_program->uniformLocation("mvp"));
+    m_mvp = std::make_unique<QMatrix4x4>();
+    m_mvp->setToIdentity();
+    m_mvp->scale(m_zoom);
+    m_mvp->translate(m_camX, m_camY);
 
+    glCheck(m_program->bind());
+    glCheck(m_program->setUniformValue(m_mvp_loc, *m_mvp));
     glCheck(m_program->release());
+
     glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
     glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
     glCheck(glBindVertexArray(0));
@@ -80,6 +81,11 @@ void Renderer::render() {
     glCheck(glClearColor(0, 0, 0, 1));
     glCheck(glClear(GL_COLOR_BUFFER_BIT));
 
+    if (m_zoom_changed) {
+        glCheck(m_program->setUniformValue(m_mvp_loc, *m_mvp));
+        m_zoom_changed = false;
+    }
+
     glCheck(glEnable(GL_BLEND));
     glCheck(glEnable(GL_DEPTH_TEST));
     glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
@@ -96,4 +102,14 @@ void Renderer::render() {
     glCheck(glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, m_engineParams.numObjs));
 
     m_program->release();
+}
+
+void Renderer::setZoomSteps(int steps) {
+    if (steps != 0) {
+        m_zoom = zoom_default + (steps * zoom_scale);
+        m_zoom_changed = true;
+
+        m_mvp->scale(m_zoom);
+        m_openGLView->update();
+    }
 }
