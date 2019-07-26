@@ -21,22 +21,30 @@ ControlPanelWidget::ControlPanelWidget(QWidget *parent) : QWidget{parent} {
     auto section1 = new Section("Section 1", 50, this);
     auto section1Layout = new QVBoxLayout();
     section1Layout->addWidget(new QPushButton("This is section 1 button", section1));
-    section1->setContentLayout(*section1Layout);
+    section1->setContentLayout(section1Layout);
+    section1->setToggleButtonStyle("QToolButton {color: white;}");
+    section1->setContentAreaFrameShape(QFrame::NoFrame);
 
     auto section2 = new Section("Section 2", 50, this);
     auto section2Layout = new QVBoxLayout();
     section2Layout->addWidget(new QPushButton("This is section 2 button", section2));
-    section2->setContentLayout(*section2Layout);
+    section2->setContentLayout(section2Layout);
+    section2->setToggleButtonStyle("QToolButton {color: white;}");
+    section2->setContentAreaFrameShape(QFrame::NoFrame);
 
     auto section3 = new Section("Section 3", 50, this);
     auto section3Layout = new QVBoxLayout();
     section3Layout->addWidget(new QPushButton("This is section 3 button", section3));
-    section3->setContentLayout(*section3Layout);
+    section3->setContentLayout(section3Layout);
+    section3->setToggleButtonStyle("QToolButton {color: white;}");
+    section3->setContentAreaFrameShape(QFrame::NoFrame);
 
     auto section4 = new Section("Section 4", 50, this);
     auto section4Layout = new QVBoxLayout();
     section4Layout->addWidget(new QPushButton("This is section 4 button", section4));
-    section4->setContentLayout(*section4Layout);
+    section4->setContentLayout(section4Layout);
+    section4->setToggleButtonStyle("QToolButton {color: white;}");
+    section4->setContentAreaFrameShape(QFrame::NoFrame);
 
     vLayout->addWidget(section1);
     vLayout->addWidget(section2);
