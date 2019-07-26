@@ -28,9 +28,8 @@ void SimView::paintGL() { m_renderer->render(); }
 
 void SimView::resizeGL(int width, int height) { m_renderer->resize(width, height); }
 
-void SimView::wheelEvent(QWheelEvent *e) {
-    auto numDegrees = e->angleDelta().y();
-    int numSteps = numDegrees / 2;
+void SimView::wheelEvent(QWheelEvent *e) { m_renderer->wheelEvent(e); }
 
-    m_renderer->setZoomSteps(numSteps);
-}
+void SimView::mousePressEvent(QMouseEvent *event) { m_renderer->mousePressEvent(event); }
+
+void SimView::mouseMoveEvent(QMouseEvent *event) { m_renderer->mouseMoveEvent(event); }
