@@ -1,9 +1,12 @@
 #pragma once
 
+#include <QMouseEvent>
 #include <QObject>
 #include <QOpenGLFunctions_4_1_Core>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
+#include <QVector3D>
+#include <QWheelEvent>
 #include <engine/Engine.h>
 #include <memory>
 
@@ -15,7 +18,10 @@ class Renderer : public QObject, protected QOpenGLFunctions_4_1_Core {
 
     void initialize();
     void render();
-    void setZoomSteps(int steps);
+
+    void wheelEvent(QWheelEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
     inline void resize(int width, int height) noexcept {}
 
   public slots:
@@ -30,8 +36,9 @@ class Renderer : public QObject, protected QOpenGLFunctions_4_1_Core {
 
     std::unique_ptr<QMatrix4x4> m_mvp{};
     int m_mvp_loc{};
-    bool m_zoom_changed = false;
-    GLfloat m_zoom = zoom_default;
+    bool m_mvp_changed = false;
+    GLfloat m_zoom = zoomDefault;
+    QVector3D m_translation = translationDefault;
     GLfloat m_radius = 0.02f;
     GLfloat m_camX = 0.0f;
     GLfloat m_camY = 0.0f;
@@ -42,6 +49,11 @@ class Renderer : public QObject, protected QOpenGLFunctions_4_1_Core {
     GLuint m_obo{};
     GLuint m_rbo{};
 
-    static constexpr GLfloat zoom_default = 1.0f;
-    static constexpr GLfloat zoom_scale = 0.00044f;
+    static constexpr GLfloat zoomDefault = 1.0f;
+    static constexpr QVector3D translationDefault = QVector3D(0, 0, 0);
+    static constexpr GLfloat zoomScale = 0.01f;
+    static constexpr GLfloat movScale = 0.001f;
+
+    QVector3D m_mousePos;
+    QVector3D m_camPos;
 };
