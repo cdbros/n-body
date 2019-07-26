@@ -4,7 +4,6 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
-#include <QWheelEvent>
 #include <engine/EngineThread.h>
 #include <memory>
 #include <rendering/Renderer.h>
@@ -22,6 +21,8 @@ class SimView : public QOpenGLWidget {
 
   private:
     void wheelEvent(QWheelEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
 
   private:
     std::unique_ptr<Renderer> m_renderer;

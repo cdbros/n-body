@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Error.h"
 #include "Shaders.h"
+#include <QVector3D>
 #include <iostream>
 
 Renderer::Renderer(QOpenGLWidget *openGLView) : m_openGLView{openGLView}, QObject(openGLView) {}
@@ -81,9 +82,14 @@ void Renderer::render() {
     glCheck(glClearColor(0, 0, 0, 1));
     glCheck(glClear(GL_COLOR_BUFFER_BIT));
 
-    if (m_zoom_changed) {
+    if (m_mvp_changed) {
+        m_mvp->scale(m_zoom);
+        m_mvp->translate(m_translation);
+
         glCheck(m_program->setUniformValue(m_mvp_loc, *m_mvp));
-        m_zoom_changed = false;
+        m_mvp_changed = false;
+        m_translation = translationDefault;
+        m_zoom = zoomDefault;
     }
 
     glCheck(glEnable(GL_BLEND));
@@ -104,12 +110,26 @@ void Renderer::render() {
     m_program->release();
 }
 
-void Renderer::setZoomSteps(int steps) {
-    if (steps != 0) {
-        m_zoom = zoom_default + (steps * zoom_scale);
-        m_zoom_changed = true;
+void Renderer::wheelEvent(QWheelEvent *event) {
+    auto numDegrees = event->angleDelta() / 8;
+    auto numSteps = numDegrees.y();
 
-        m_mvp->scale(m_zoom);
-        m_openGLView->update();
+    if (numSteps != 0) {
+        m_zoom = zoomDefault + numSteps * zoomScale;
+        m_mvp_changed = true;
+    }
+}
+
+void Renderer::mouseMoveEvent(QMouseEvent *event) {
+    if (event->buttons() & Qt::LeftButton) {
+        auto diff = QVector3D(event->localPos()) - m_mousePos;
+        m_translation = diff * movScale;
+        m_mvp_changed = true;
+    }
+}
+
+void Renderer::mousePressEvent(QMouseEvent *event) {
+    if (event->buttons() & Qt::LeftButton) {
+        m_mousePos = QVector3D(event->localPos());
     }
 }
