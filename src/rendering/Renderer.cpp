@@ -125,6 +125,7 @@ void Renderer::mouseMoveEvent(QMouseEvent *event) {
         auto diff = QVector3D(event->localPos()) - m_mousePos;
         m_translation = diff * movScale;
         m_mvp_changed = true;
+        m_mousePos = event->localPos();
     }
 }
 
