@@ -13,8 +13,8 @@ find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 find_package(OpenGL REQUIRED)
 
 # qt-section-widget
-SET(QT_SECTION_WIDGET qt-section-widget)
-add_subdirectory(${QT_SECTION_WIDGET})
+SET(QT_COLLAPSIBLE_SECTION qt-collapsible-section)
+add_subdirectory(${QT_COLLAPSIBLE_SECTION})
 
 # source files
 file(GLOB_RECURSE HDRS "src/*.hh" "src/*.h")
@@ -37,7 +37,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONF
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Widgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${QT_SECTION_WIDGET})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${QT_SECTION_WIDGET})
+target_include_directories(${PROJECT_NAME} PRIVATE ${QT_COLLAPSIBLE_SECTION})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${QT_COLLAPSIBLE_SECTION})
 
 target_compile_options(${PROJECT_NAME} PRIVATE -fstandalone-debug)
